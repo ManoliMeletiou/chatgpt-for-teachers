@@ -7,15 +7,25 @@
   <title>Join class · ChatGPT for Teachers</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,520;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
       --teal: #0c6e66;
+      --teal-fg: #f4f7f4;
+      --teal-soft: #d3efe9;
       --amber: #c44e10;
+      --amber-bg: #ffe0c2;
       --paper: #f6edd8;
-      --ink: #1c1915;
-      --ink-soft: #5c564c;
+      --ink: #13241f;
+      --ink-soft: #2c4039;
+      --muted: #5a6d66;
       --surface: #fffaf0;
+      --elevated: #ffffff;
+      --line: #ead9b6;
+      --green: #1a7a46;
+      --green-bg: #d6f0e0;
+      --red: #c4332a;
+      --red-bg: #fde0da;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; min-height: 100%; }
@@ -23,11 +33,12 @@
       font-family: "Source Sans 3", system-ui, sans-serif;
       background: var(--paper);
       color: var(--ink);
-      line-height: 1.5;
+      line-height: 1.55;
     }
-    h1, h2, .display { font-family: Fraunces, Georgia, serif; font-weight: 500; letter-spacing: -0.02em; }
-    button { font: inherit; cursor: pointer; }
-    .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; }
+    h1, h2, h3, .display { font-family: Fraunces, Georgia, serif; font-weight: 520; letter-spacing: -0.03em; line-height: 1.15; }
+    button, textarea, input { font: inherit; }
+    button { cursor: pointer; }
+    .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500; }
     #app { min-height: 100dvh; display: flex; flex-direction: column; }
     .join {
       background: var(--amber);
@@ -38,49 +49,107 @@
       justify-content: center;
       padding: 2rem 1.25rem calc(2rem + env(safe-area-inset-bottom));
     }
-    .join .card {
+    .card {
       background: var(--surface);
       color: var(--ink);
-      border-radius: 14px;
+      border-radius: 12px;
       padding: 1.25rem;
       margin-top: 1.5rem;
     }
     input, textarea {
       width: 100%;
       min-height: 48px;
-      border: 1px solid #e4d9c4;
+      border: 1px solid var(--line);
       border-radius: 8px;
       padding: 0.7rem 0.85rem;
-      font: inherit;
       background: #fff;
+      color: var(--ink);
     }
     textarea { min-height: 7rem; }
     .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      min-height: 48px; width: 100%; border: 0; border-radius: 8px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      min-height: 48px; border: 0; border-radius: 8px;
       padding: 0 1rem; font-weight: 600;
-      background: var(--teal); color: #fff;
     }
+    .btn-teal { background: var(--teal); color: #fff; width: 100%; }
+    .btn-paper { background: var(--paper); color: var(--amber); }
     .btn[disabled] { opacity: 0.45; }
     header.follow {
       background: var(--amber); color: var(--paper);
       padding: 0.85rem 1rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
     }
-    .stage { flex: 1; padding: 1.25rem 1rem 6rem; max-width: 40rem; margin: 0 auto; width: 100%; }
-    .item { display: grid; grid-template-columns: 1.5rem 1fr; gap: 0.4rem 0.7rem; margin-top: 0.85rem; }
-    .item .n { color: var(--teal); font-family: Fraunces, serif; font-size: 1.15rem; }
+    .banner {
+      background: var(--ink); color: var(--paper);
+      padding: 0.55rem 1rem; font-size: 0.9rem;
+    }
+    .stage { flex: 1; padding: 1rem 1rem 8rem; max-width: 42rem; margin: 0 auto; width: 100%; }
+    .slide {
+      background: var(--elevated);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(27,25,20,0.06), 0 2px 6px rgba(27,25,20,0.04);
+    }
+    .slide-bar { padding: 0.7rem 1.25rem; color: var(--paper); }
+    .bar-teach { background: var(--teal); }
+    .bar-hands-on { background: var(--amber); }
+    .bar-avoid-aim { background: var(--red); }
+    .bar-lens { background: var(--green); }
+    .bar-step { background: var(--teal); }
+    .slide-body { padding: 1.25rem 1.25rem 1.5rem; }
+    .item {
+      display: flex; gap: 0.75rem; width: 100%; text-align: left;
+      border: 0; border-left: 4px solid var(--teal);
+      background: var(--teal-soft);
+      border-radius: 8px; padding: 0.9rem 0.85rem; color: var(--ink);
+    }
+    .item.warn { border-left-color: var(--red); background: var(--red-bg); }
+    .item.green { border-left-color: var(--green); background: var(--green-bg); }
+    .item.amber { border-left-color: var(--amber); background: var(--amber-bg); }
+    .item.on { opacity: 0.85; }
+    .glyph {
+      flex: 0 0 2.5rem; height: 2.5rem;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 8px; background: var(--elevated); color: var(--teal);
+      font-family: Fraunces, Georgia, serif;
+    }
+    .item.warn .glyph { color: var(--red); }
+    .item.green .glyph { color: var(--green); }
+    .sides { display: grid; gap: 0.75rem; margin-top: 1.25rem; }
+    @media (min-width: 640px) { .sides { grid-template-columns: 1fr 1fr; } }
+    .side { border-radius: 8px; padding: 1.1rem 1.15rem; }
+    .side.avoid { background: var(--red-bg); color: var(--red); }
+    .side.aim { background: var(--green-bg); color: var(--green); }
+    .prompt {
+      margin-top: 1.25rem; background: var(--teal); color: var(--teal-fg);
+      border-radius: 8px; padding: 1.1rem 1.2rem;
+    }
+    .booklet {
+      margin-top: 1rem; background: var(--surface);
+      border-radius: 12px; padding: 1.15rem 1.2rem 1.3rem;
+      box-shadow: 0 0 0 1px var(--line);
+    }
+    .booklet textarea, .booklet input {
+      background: transparent; border: 0; border-bottom: 1px solid rgba(196,78,16,0.35);
+      border-radius: 0; padding-left: 0;
+    }
     footer.bar {
       position: sticky; bottom: 0;
       background: var(--amber); color: var(--paper);
-      padding: 0.85rem 1rem calc(0.85rem + env(safe-area-inset-bottom));
+      padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
     }
-    .note {
-      margin-top: 1.25rem; padding: 1rem;
-      background: #fff; border-radius: 12px;
-      box-shadow: 0 0 0 1px #eadfcb;
+    .sheet {
+      position: fixed; inset: 0; background: var(--paper); z-index: 20;
+      display: flex; flex-direction: column;
     }
+    .sheet .top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 1rem; border-bottom: 1px solid rgba(196,78,16,0.3);
+      background: var(--surface);
+    }
+    .sheet .body { flex: 1; overflow: auto; padding: 1rem 1.15rem 7rem; }
     .err { color: #9b1c1c; font-size: 0.9rem; }
-    .wait { opacity: 0.85; }
+    .ok { color: var(--green); font-size: 0.9rem; }
   </style>
 </head>
 <body>
@@ -92,29 +161,29 @@
       "https://ntfy.mzte.de",
     ];
     const CONTENT_URLS = [
+      "hour.json",
       "content.json",
+      "https://cdn.jsdelivr.net/gh/ManoliMeletiou/chatgpt-for-teachers@main/docs/hour.json",
       "https://cdn.jsdelivr.net/gh/ManoliMeletiou/chatgpt-for-teachers@main/docs/content.json",
     ];
-    const TOPIC = (code) => "cftnl" + String(code).toUpperCase().replace(/[^A-Z0-9]/g, "").toLowerCase();
     const params = new URLSearchParams(location.search);
-    const hashCode = (location.hash.match(/join\/([A-Za-z0-9]+)/i) || [])[1];
-    const pathCode = (location.pathname.match(/join\/([A-Za-z0-9]+)/i) || [])[1];
-    let code = (params.get("c") || hashCode || pathCode || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    let code = (params.get("c") || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
     const app = document.getElementById("app");
-    let content = null;
+    let pack = { courses: [], modules: [] };
     let live = null;
     let name = sessionStorage.getItem("cft-guest-name") || "";
     let joined = false;
-    let notes = {};
-    try { notes = JSON.parse(sessionStorage.getItem("cft-notes") || "{}"); } catch (e) { notes = {}; }
+    let bookletOpen = false;
+    let sent = false;
+    let checked = {};
+    let answers = {};
+    try { answers = JSON.parse(localStorage.getItem("cft-booklet") || "{}"); } catch (e) { answers = {}; }
 
+    function topicLive(c) { return "cftnl" + String(c).toUpperCase().replace(/[^A-Z0-9]/g, "").toLowerCase(); }
+    function topicGuest(c) { return "cftnlg" + String(c).toUpperCase().replace(/[^A-Z0-9]/g, "").toLowerCase(); }
     function displayCode(c) {
       const n = String(c || "").toUpperCase();
       return n.length === 6 ? n.slice(0, 3) + " " + n.slice(3) : n;
-    }
-    function moduleOf(id) {
-      if (!content || !id) return null;
-      return content.modules.find((m) => m.id === id || m.slug === id) || null;
     }
     function escapeHtml(s) {
       return String(s || "").replace(/[&<>"']/g, (ch) => {
@@ -125,71 +194,148 @@
         return "&#39;";
       });
     }
-
-    function payloadFromEvent(event) {
-      if (!event || typeof event !== "object") return null;
-      if (event.event && event.event !== "message") return null;
-      if (!event.message) return null;
-      try {
-        const payload = JSON.parse(event.message);
-        if (payload && payload.v === 1 && payload.code) return payload;
-      } catch (e) {}
-      return null;
+    function moduleOf(id) {
+      if (!id) return null;
+      return pack.modules.find((m) => m.id === id || m.slug === id) || null;
+    }
+    function courseModules() {
+      const course = pack.courses.find((c) => c.id === (live && live.courseId));
+      const ids = course ? course.moduleIds : null;
+      if (ids && ids.length) {
+        return ids.map(moduleOf).filter(Boolean);
+      }
+      return pack.modules.filter((m) => Number(m.id) >= 24);
+    }
+    function uniqueBooklets() {
+      const seen = new Set();
+      const out = [];
+      for (const mod of courseModules()) {
+        if (!mod.booklet || seen.has(mod.booklet.id)) continue;
+        seen.add(mod.booklet.id);
+        out.push(mod.booklet);
+      }
+      return out;
+    }
+    function filledCount(step) {
+      if (!step) return 0;
+      return step.fields.filter((f) => String(answers[f.id] || "").trim()).length;
     }
 
-    async function pullFrom(host, topic) {
-      const res = await fetch(host + "/" + topic + "/json?poll=1", { cache: "no-store" });
-      if (!res.ok) return null;
-      const text = await res.text();
+    function ntfyMessages(text) {
       const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
-      for (let i = lines.length - 1; i >= 0; i--) {
+      const out = [];
+      for (const line of lines) {
         try {
-          const parsed = payloadFromEvent(JSON.parse(lines[i]));
-          if (parsed) return parsed;
+          const ev = JSON.parse(line);
+          if (ev.event && ev.event !== "message") continue;
+          if (!ev.message) continue;
+          out.push(JSON.parse(ev.message));
         } catch (e) {}
       }
-      return null;
+      return out;
     }
-
+    async function postTopic(topic, body, title) {
+      await Promise.all(BUS_HOSTS.map((host) =>
+        fetch(host + "/" + topic, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain; charset=utf-8", Title: title, Cache: "yes" },
+          body,
+        }).catch(() => null)
+      ));
+    }
+    async function pollTopic(topic) {
+      const rows = await Promise.all(BUS_HOSTS.map((host) =>
+        fetch(host + "/" + topic + "/json?poll=1", { cache: "no-store" })
+          .then((r) => r.ok ? r.text() : "")
+          .catch(() => "")
+      ));
+      return rows.find((t) => t && t.length) || "";
+    }
     async function pullLive() {
       if (!code) return null;
-      const topic = TOPIC(code);
-      const rows = await Promise.all(BUS_HOSTS.map((host) => pullFrom(host, topic).catch(() => null)));
+      const text = await pollTopic(topicLive(code));
+      const msgs = ntfyMessages(text);
       let best = null;
-      for (const row of rows) {
-        if (!row || row.status === "ended") continue;
-        if (!best || (row.at || 0) >= (best.at || 0)) best = row;
+      for (const msg of msgs) {
+        if (!msg || msg.v !== 1 || msg.status === "ended") continue;
+        if (!best || (msg.at || 0) >= (best.at || 0)) best = msg;
       }
       return best;
+    }
+    async function hello() {
+      if (!code || !name) return;
+      await postTopic(topicGuest(code), JSON.stringify({
+        v: 2, kind: "hello", code: code, name: name, at: Date.now(),
+      }), "cft-guest");
+    }
+    async function sendBooklet() {
+      if (!code || !name) return false;
+      const feeling = String(answers["review-feeling"] || "").trim();
+      const takeaway = String(answers["review-takeaway"] || "").trim();
+      await postTopic(topicGuest(code), JSON.stringify({
+        v: 2, kind: "booklet", code: code, name: name,
+        answers: answers, feeling: feeling, takeaway: takeaway, at: Date.now(),
+      }), "cft-guest");
+      sent = true;
+      return true;
+    }
+
+    function saveAnswers() {
+      localStorage.setItem("cft-booklet", JSON.stringify(answers));
+    }
+
+    function kindBar(kind) {
+      if (kind === "hands-on") return "bar-hands-on";
+      if (kind === "avoid-aim") return "bar-avoid-aim";
+      if (kind === "lens") return "bar-lens";
+      if (kind === "step") return "bar-step";
+      return "bar-teach";
+    }
+    function itemClass(item) {
+      const blob = (item.n + " " + item.title).toLowerCase();
+      if (/^red\b/.test(blob) || /wrong|never|fail|hallucin|photographed/.test(blob)) return "item warn";
+      if (/^green\b/.test(blob)) return "item green";
+      if (/^amber\b/.test(blob)) return "item amber";
+      return "item";
+    }
+    function itemMark(item, i, on) {
+      if (on) return "✓";
+      const n = String(item.n || "");
+      if (n === "check" || n === "") return String(i + 1);
+      if (/^green/i.test(n)) return "G";
+      if (/^amber/i.test(n)) return "A";
+      if (/^red/i.test(n)) return "R";
+      return n;
+    }
+    function skipPara(p, slide) {
+      const t = String(p || "");
+      if (!t) return true;
+      if (/^use this question/i.test(t)) return true;
+      if (slide.prompt && t.replace(/[“”"]/g, "") === slide.prompt) return true;
+      return false;
     }
 
     function renderJoin(message) {
       app.innerHTML =
         '<main class="join">' +
-          '<p class="kicker wait">' + (code ? "Joining " + displayCode(code) : "Join a live class") + "</p>" +
+          '<p class="kicker">' + (code ? "Joining " + displayCode(code) : "Join a live class") + "</p>" +
           '<h1 class="display" style="font-size:2rem;margin:0.4rem 0 0">' +
             (live ? escapeHtml(live.title) : "You are on the live class page.") +
           "</h1>" +
-          '<p style="opacity:.9;max-width:28rem">' +
-            (live
-              ? "Type your name, then you stay on the presenter\u2019s slide."
-              : (message || "This is the public join page \u2014 not a draft. Open the room on the presenting laptop, then enter.")) +
-          "</p>" +
+          '<p style="opacity:.92;max-width:28rem">Type your name. You will see the same slide as the room, with the booklet underneath.</p>' +
           '<form class="card" id="form">' +
-            (code ? "" : '<label class="kicker" style="color:#5c564c">Class code</label><input id="codein" placeholder="L7S M9Y" value="' + escapeHtml(code) + '" autocomplete="off" />') +
-            '<label class="kicker" style="color:#5c564c;display:block;margin-top:' + (code ? "0" : "0.9rem") + '">Your name</label>' +
+            (code ? "" : '<label class="kicker" style="color:#5a6d66">Class code</label><input id="codein" placeholder="L7S M9Y" />') +
+            '<label class="kicker" style="color:#5a6d66;display:block;margin-top:' + (code ? "0" : "0.9rem") + '">Your name</label>' +
             '<input id="namein" placeholder="First name" value="' + escapeHtml(name) + '" autocomplete="name" />' +
-            '<p class="err" id="err"></p>' +
-            '<button class="btn" style="margin-top:0.9rem" type="submit">' + (live ? "Enter the class" : "Look up this class") + "</button>" +
-            '<p style="font-size:0.9rem;color:#5c564c;margin:0.8rem 0 0">Use your own phone \u2014 not the presenting laptop. No sign-in.</p>' +
+            '<p class="err" id="err">' + escapeHtml(message || "") + "</p>" +
+            '<button class="btn btn-teal" style="margin-top:0.9rem" type="submit">Enter the class</button>' +
+            '<p style="font-size:0.9rem;color:#5a6d66;margin:0.8rem 0 0">Use your own phone — not the presenting laptop. No sign-in.</p>' +
           "</form>" +
         "</main>";
       document.getElementById("form").onsubmit = async (e) => {
         e.preventDefault();
         const err = document.getElementById("err");
-        if (!code) {
-          code = (document.getElementById("codein").value || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
-        }
+        if (!code) code = (document.getElementById("codein").value || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
         name = (document.getElementById("namein").value || "").trim();
         if (code.length !== 6) { err.textContent = "Enter the six-character code."; return; }
         if (name.length < 2) { err.textContent = "Type the name the presenter should see."; return; }
@@ -199,48 +345,179 @@
         live = snap;
         joined = true;
         history.replaceState({}, "", "?c=" + code);
+        hello();
         renderStage();
       };
     }
 
+    function renderSlide(slide) {
+      if (!slide) return "<p>The presenter is moving the lesson. This page will catch up.</p>";
+      const paras = (slide.paras || []).filter((p) => !skipPara(p, slide));
+      const items = slide.items || [];
+      const steps = slide.steps || [];
+      let html = '<article class="slide">';
+      html += '<div class="slide-bar ' + kindBar(slide.kind) + '"><p class="kicker" style="margin:0">' +
+        escapeHtml(slide.kicker) + (slide.duration ? " · " + escapeHtml(slide.duration) : "") + "</p></div>";
+      html += '<div class="slide-body">';
+      html += '<h2 class="display" style="font-size:1.7rem;margin:0;max-width:22ch">' + escapeHtml(slide.title) + "</h2>";
+      if (slide.activity) html += '<p class="kicker" style="color:var(--muted);margin:0.7rem 0 0">' + escapeHtml(slide.activity) + "</p>";
+      if (slide.lead) html += '<p style="margin:0.9rem 0 0;font-size:1.05rem;color:var(--ink-soft)">' + escapeHtml(slide.lead) + "</p>";
+      paras.forEach((p) => { html += '<p style="margin:0.8rem 0 0;color:var(--ink-soft)">' + escapeHtml(p) + "</p>"; });
+      if (slide.prompt) {
+        html += '<div class="prompt"><p class="kicker" style="margin:0;opacity:.75">Talk with the person next to you</p>' +
+          '<p class="display" style="margin:0.55rem 0 0;font-size:1.45rem">' + escapeHtml(slide.prompt) + "</p></div>";
+      }
+      if (steps.length) {
+        html += '<ol style="list-style:none;padding:0;margin:1.2rem 0 0;display:grid;gap:0.6rem">';
+        steps.forEach((step, i) => {
+          html += '<li style="display:flex;gap:0.7rem;background:var(--surface);border-radius:8px;padding:0.85rem"><span class="glyph">' + (i + 1) + "</span><span>" + escapeHtml(step) + "</span></li>";
+        });
+        html += "</ol>";
+      }
+      if (items.length) {
+        html += '<div style="margin-top:1.2rem;display:grid;gap:0.6rem">';
+        items.forEach((it, i) => {
+          const key = "i" + i;
+          const on = !!checked[key];
+          html += '<button type="button" class="' + itemClass(it) + (on ? " on" : "") + '" data-check="' + key + '">' +
+            '<span class="glyph">' + escapeHtml(itemMark(it, i, on)) + "</span>" +
+            "<span><strong style='display:block'>" + escapeHtml(it.title) + "</strong>" +
+            (it.body ? "<span style='display:block;margin-top:0.25rem;font-size:0.92rem;color:var(--ink-soft)'>" + escapeHtml(it.body) + "</span>" : "") +
+            "</span></button>";
+        });
+        html += "</div>";
+      }
+      if (slide.avoidBody || slide.aimBody) {
+        html += '<div class="sides">';
+        if (slide.avoidBody) html += '<div class="side avoid"><p class="kicker" style="margin:0">' + escapeHtml(slide.avoidLabel || "Risky habit") + "</p><p style='margin:0.6rem 0 0'>" + escapeHtml(slide.avoidBody) + "</p></div>";
+        if (slide.aimBody) html += '<div class="side aim"><p class="kicker" style="margin:0">' + escapeHtml(slide.aimLabel || "Professional habit") + "</p><p style='margin:0.6rem 0 0'>" + escapeHtml(slide.aimBody) + "</p></div>";
+        html += "</div>";
+      }
+      if (slide.example) html += '<p style="margin:1rem 0 0;background:var(--teal-soft);border-radius:8px;padding:0.85rem 1rem"><span class="kicker" style="color:var(--teal)">In the classroom</span><br>' + escapeHtml(slide.example) + "</p>";
+      if (slide.remember) html += '<p style="margin:1rem 0 0;background:var(--ink);color:var(--paper);border-radius:8px;padding:0.85rem 1rem"><span class="kicker" style="opacity:.7">Hold this</span> ' + escapeHtml(slide.remember) + "</p>";
+      if (slide.warning) html += '<p style="margin:1rem 0 0;background:var(--amber-bg);color:var(--amber);border-radius:8px;padding:0.85rem 1rem">' + escapeHtml(slide.warning) + "</p>";
+      html += "</div></article>";
+      return html;
+    }
+
+    function renderFields(step, prefix) {
+      if (!step) return "";
+      let html = "";
+      step.fields.forEach((f, i) => {
+        html += '<div style="margin-top:1rem"><label class="kicker" style="color:var(--amber);display:flex;gap:0.5rem;align-items:flex-start">' +
+          '<span style="display:flex;width:1.75rem;height:1.75rem;align-items:center;justify-content:center;border-radius:6px;background:var(--amber);color:var(--paper);font-family:Fraunces,serif">' + (i + 1) + "</span>" +
+          "<span style='padding-top:0.2rem'>" + escapeHtml(f.label) + "</span></label>";
+        if (f.multiline) html += '<textarea data-field="' + escapeHtml(f.id) + '" placeholder="' + escapeHtml(f.placeholder || "") + '">' + escapeHtml(answers[f.id] || "") + "</textarea>";
+        else html += '<input data-field="' + escapeHtml(f.id) + '" placeholder="' + escapeHtml(f.placeholder || "") + '" value="' + escapeHtml(answers[f.id] || "") + '" />';
+        html += "</div>";
+      });
+      return html;
+    }
+
+    function bindFields(root) {
+      root.querySelectorAll("[data-field]").forEach((el) => {
+        el.oninput = () => {
+          answers[el.getAttribute("data-field")] = el.value;
+          saveAnswers();
+        };
+      });
+      root.querySelectorAll("[data-check]").forEach((el) => {
+        el.onclick = () => {
+          const key = el.getAttribute("data-check");
+          checked[key] = !checked[key];
+          renderStage();
+        };
+      });
+    }
+
+    function renderBookletPage(mod, slide) {
+      const step = mod && mod.booklet;
+      if (!step) return "";
+      const filled = filledCount(step);
+      return '<section class="booklet">' +
+        '<p class="kicker" style="color:var(--amber);margin:0">Your booklet · write on this page</p>' +
+        '<h3 class="display" style="margin:0.35rem 0 0;font-size:1.25rem">Step ' + escapeHtml(step.n) + " · " + escapeHtml(step.title) + "</h3>" +
+        '<p style="margin:0.35rem 0 0;color:var(--ink-soft);font-size:0.92rem">' + escapeHtml(step.lead) + "</p>" +
+        '<p style="margin:0.5rem 0 0" class="kicker">' + filled + " / " + step.fields.length + "</p>" +
+        renderFields(step) +
+        '<p style="margin:0.8rem 0 0;font-size:0.8rem;color:var(--muted)">Saves as you type. Send it to the presenter when you are ready.</p>' +
+      "</section>";
+    }
+
+    function renderSheet() {
+      const steps = uniqueBooklets();
+      const total = steps.reduce((n, s) => n + s.fields.length, 0);
+      const filled = steps.reduce((n, s) => n + filledCount(s), 0);
+      app.innerHTML =
+        '<div class="sheet">' +
+          '<div class="top">' +
+            '<div><p class="kicker" style="color:var(--amber);margin:0">Workshop booklet</p>' +
+            '<p class="display" style="margin:0.15rem 0 0;font-size:1.2rem">' + filled + " / " + total + " filled</p></div>" +
+            '<button class="btn" id="close-sheet" style="background:transparent;min-width:48px">Close</button>' +
+          "</div>" +
+          '<div class="body" id="sheet-body">' +
+            steps.map((step) =>
+              '<section style="margin-bottom:1.6rem">' +
+                '<p class="kicker" style="color:var(--amber);margin:0">Step ' + escapeHtml(step.n) + "</p>" +
+                '<h3 class="display" style="margin:0.2rem 0 0">' + escapeHtml(step.title) + "</h3>" +
+                '<p style="color:var(--ink-soft)">' + escapeHtml(step.lead) + "</p>" +
+                renderFields(step) +
+              "</section>"
+            ).join("") +
+            '<section style="margin-top:1rem;background:var(--teal);color:var(--teal-fg);border-radius:12px;padding:1.1rem">' +
+              '<p class="kicker" style="margin:0;opacity:.8">Send to the presenter</p>' +
+              '<h3 class="display" style="margin:0.3rem 0 0.6rem">How was this hour?</h3>' +
+              '<label class="kicker" style="opacity:.8">How did this session feel?</label>' +
+              '<textarea data-field="review-feeling">' + escapeHtml(answers["review-feeling"] || "") + "</textarea>" +
+              '<label class="kicker" style="opacity:.8;display:block;margin-top:0.8rem">One thing I will try this week</label>' +
+              '<textarea data-field="review-takeaway">' + escapeHtml(answers["review-takeaway"] || "") + "</textarea>" +
+              '<p id="send-msg" class="' + (sent ? "ok" : "") + '" style="min-height:1.2rem">' + (sent ? "Booklet sent. You can update it." : "") + "</p>" +
+              '<button class="btn btn-paper" id="send-now" style="margin-top:0.6rem;width:100%">Send booklet</button>' +
+            "</section>" +
+          "</div>" +
+        "</div>";
+      bindFields(app);
+      document.getElementById("close-sheet").onclick = () => { bookletOpen = false; renderStage(); };
+      document.getElementById("send-now").onclick = async () => {
+        const msg = document.getElementById("send-msg");
+        msg.textContent = "Sending…";
+        await sendBooklet();
+        msg.textContent = "Booklet sent. You can update it.";
+        msg.className = "ok";
+      };
+    }
+
     function renderStage() {
-      const mod = moduleOf(live.moduleId);
+      if (bookletOpen) { renderSheet(); return; }
+      const mod = moduleOf(live && live.moduleId);
       const slides = mod ? mod.slides : [];
-      const i = Math.min(live.slide || 0, Math.max(0, slides.length - 1));
+      const i = Math.min(live && live.slide || 0, Math.max(0, slides.length - 1));
       const slide = slides[i];
-      const key = (mod && mod.id) + ":" + i;
+      const mods = courseModules();
+      const pos = mod ? mods.findIndex((m) => m.id === mod.id) : -1;
+      const step = mod && mod.booklet;
+      const filled = step ? filledCount(step) : 0;
       app.innerHTML =
         '<header class="follow">' +
-          '<p class="kicker" style="margin:0;opacity:.85">Following ' + displayCode(code) + (name ? " · " + escapeHtml(name) : "") + "</p>" +
-          '<h1 class="display" style="margin:0.15rem 0 0;font-size:1.2rem">' + (mod ? escapeHtml(mod.title) : "Waiting for the next slide") + "</h1>" +
-        "</header>" +
-        '<div class="stage">' +
-          (slide
-            ? '<p class="kicker" style="color:var(--teal);margin:0">Slide ' + (i + 1) + " of " + slides.length + "</p>" +
-              '<h2 class="display" style="font-size:1.7rem;margin:0.35rem 0 0.7rem">' + escapeHtml(slide.title) + "</h2>" +
-              (slide.paras || []).map((p) => "<p>" + escapeHtml(p) + "</p>").join("") +
-              (slide.items || []).map((it) =>
-                '<div class="item"><div class="n">' + escapeHtml(it.n) + "</div><div><strong>" +
-                escapeHtml(it.title) + '</strong><div style="color:#5c564c">' + escapeHtml(it.body) +
-                "</div></div></div>"
-              ).join("") +
-              (slide.avoid ? "<p><strong>Risky habit.</strong> " + escapeHtml(slide.avoid) + "</p>" : "") +
-              (slide.aim ? "<p><strong>Professional habit.</strong> " + escapeHtml(slide.aim) + "</p>" : "") +
-              (slide.lens ? "<p>" + escapeHtml(slide.lens) + "</p>" : "")
-            : "<p>The presenter is moving the lesson. This page will catch up.</p>") +
-          '<div class="note">' +
-            '<p class="kicker" style="color:var(--teal);margin:0">Write here \u2014 this phone only</p>' +
-            '<textarea id="note">' + escapeHtml(notes[key] || "") + "</textarea>" +
+          '<div class="min">' +
+            '<p class="kicker" style="margin:0;opacity:.85">Following ' + displayCode(code) + (name ? " · " + escapeHtml(name) : "") + "</p>" +
+            '<h1 class="display" style="margin:0.15rem 0 0;font-size:1.2rem">' + (mod ? escapeHtml(mod.title) : "Waiting for the next slide") + "</h1>" +
           "</div>" +
+          '<button class="btn btn-paper" id="open-booklet">Booklet' + (filled ? " " + filled : "") + "</button>" +
+        "</header>" +
+        '<div class="banner">The presenter moves the slides. Write in the booklet under this slide.</div>' +
+        '<div class="stage">' +
+          (slide ? '<p class="kicker" style="color:var(--teal);margin:0 0 0.6rem">Slide ' + (i + 1) + " of " + slides.length + (pos >= 0 ? " · Block " + (pos + 1) + " of " + mods.length : "") + "</p>" : "") +
+          renderSlide(slide) +
+          renderBookletPage(mod, slide) +
         "</div>" +
-        '<footer class="bar">' +
-          '<p style="margin:0;font-size:0.95rem">The presenter moves the slides. Write in the box under the slide.</p>' +
-        "</footer>";
-      const ta = document.getElementById("note");
-      if (ta) ta.oninput = () => {
-        notes[key] = ta.value;
-        sessionStorage.setItem("cft-notes", JSON.stringify(notes));
-      };
+        '<footer class="bar"><div style="display:flex;align-items:center;gap:0.75rem;max-width:42rem;margin:0 auto">' +
+          '<p style="margin:0;flex:1;font-size:0.95rem">Slide ' + (i + 1) + " of " + Math.max(slides.length, 1) + "</p>" +
+          '<button class="btn btn-paper" id="send-footer">Send booklet</button>' +
+        "</div></footer>";
+      bindFields(app);
+      document.getElementById("open-booklet").onclick = () => { bookletOpen = true; renderStage(); };
+      document.getElementById("send-footer").onclick = () => { bookletOpen = true; renderStage(); };
     }
 
     async function tick() {
@@ -250,22 +527,32 @@
         if (!snap) return;
         const changed = !live || live.moduleId !== snap.moduleId || live.slide !== snap.slide;
         live = snap;
-        if (changed) renderStage();
+        if (changed && !bookletOpen) {
+          checked = {};
+          renderStage();
+        }
       } catch (e) {}
     }
 
-    (async function start() {
+    async function loadPack() {
       for (const url of CONTENT_URLS) {
         try {
           const res = await fetch(url, { cache: "no-store" });
           if (!res.ok) continue;
-          content = await res.json();
-          if (content && Array.isArray(content.modules)) break;
-          content = null;
-        } catch (e) { content = null; }
+          const data = await res.json();
+          if (!data || !Array.isArray(data.modules)) continue;
+          const byId = new Map(pack.modules.map((m) => [m.id, m]));
+          data.modules.forEach((m) => byId.set(m.id, m));
+          pack.modules = [...byId.values()];
+          if (Array.isArray(data.courses) && data.courses.length) pack.courses = data.courses;
+        } catch (e) {}
       }
-      if (!content) {
-        app.innerHTML = "<p style='padding:2rem'>Could not load the lesson materials. Check the phone connection and scan again.</p>";
+    }
+
+    (async function start() {
+      await loadPack();
+      if (!pack.modules.length) {
+        app.innerHTML = "<p style='padding:2rem'>Could not load the lesson. Check the phone connection and scan again.</p>";
         return;
       }
       if (code.length === 6) {
@@ -273,6 +560,7 @@
       }
       renderJoin();
       setInterval(tick, 1200);
+      setInterval(() => { if (joined) hello(); }, 6000);
     })();
   </script>
 </body>

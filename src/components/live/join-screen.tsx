@@ -43,8 +43,8 @@ export function JoinScreen() {
           Scan to join this class.
         </h1>
         <p className="mt-4 max-w-xl text-lg text-accent-fg/85">
-          Teachers scan this code on their own phone. They land on a public class
-          page, type their name, and stay on your slide. They do not sign in.
+          Teachers scan this code on their own phone. They see the same slide you
+          are on, with the booklet underneath. They do not sign in.
         </p>
         <div className="mt-10 grid items-center gap-10 lg:grid-cols-[minmax(0,18rem)_1fr]">
           <div className="rounded-2xl bg-elevated p-4 shadow-[var(--shadow-border)]">

@@ -4,6 +4,7 @@ import { Check, Copy, Presentation, Radio } from "lucide-react";
 import { Page } from "@/components/layout/app-shell";
 import { QrCode as QrMark } from "@/components/qr-code";
 import { useLiveClass } from "@/components/live/provider";
+import { PhoneRoom } from "@/components/live/phone-room";
 import { PresenterInbox } from "@/components/live/presenter-inbox";
 import { PresenterAccount } from "@/components/presenter-account";
 import { EndCourseButton } from "@/components/live/end-course";
@@ -375,6 +376,8 @@ function HostRoom() {
               ))}
             </ul>
           </div>
+
+          <PhoneRoom code={view.session.id} />
 
           <div className="rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]">
             <h2 className="font-display text-xl">Booklets sent to you</h2>
