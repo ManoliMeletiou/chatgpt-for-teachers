@@ -1,5 +1,5 @@
 {
-  "VITE_PUBLIC_JOIN_ORIGIN": "https://manolimeletiou.github.io/chatgpt-for-teachers",
+  "VITE_PUBLIC_JOIN_ORIGIN": "https://cdn.jsdelivr.net/gh/ManoliMeletiou/chatgpt-for-teachers@main/docs/index.html",
   "deploy": {
     "database": true
   }
