@@ -1,0 +1,6 @@
+{
+  "VITE_PUBLIC_JOIN_ORIGIN": "https://chatgpt-for-teachers.vercel.app",
+  "deploy": {
+    "database": true
+  }
+}
