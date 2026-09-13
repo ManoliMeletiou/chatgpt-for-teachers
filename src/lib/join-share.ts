@@ -6,20 +6,10 @@ import { normalizeCode } from "@/lib/live/codes";
  * (*.grok-sandbox.com) — that host always answers “you don’t have access
  * to this preview”.
  */
-export const PUBLIC_JOIN_PAGE = (
-  (typeof import.meta !== "undefined" &&
-    import.meta.env &&
-    typeof import.meta.env.VITE_PUBLIC_JOIN_ORIGIN === "string" &&
-    import.meta.env.VITE_PUBLIC_JOIN_ORIGIN) ||
-  "https://cft-join.vercel.app"
-).replace(/\/$/, "");
+export const PUBLIC_JOIN_PAGE = "https://cft-nl-join.vercel.app";
 
 export function publicJoinOrigin(): string {
-  try {
-    return new URL(PUBLIC_JOIN_PAGE).origin;
-  } catch {
-    return "https://cft-join.vercel.app";
-  }
+  return PUBLIC_JOIN_PAGE;
 }
 
 export function isPrivatePreview(

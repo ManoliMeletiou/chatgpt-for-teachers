@@ -1,5 +1,5 @@
 {
-  "VITE_PUBLIC_JOIN_ORIGIN": "https://cft-join.vercel.app",
+  "VITE_PUBLIC_JOIN_ORIGIN": "https://cft-nl-join.vercel.app",
   "deploy": {
     "database": true
   }
