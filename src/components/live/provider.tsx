@@ -22,7 +22,7 @@ import {
 import { pullLiveBus } from "@/lib/server/live-bus-pull";
 import { publishLiveBus } from "@/lib/server/live-bus-publish";
 import type { ClosedClass, LiveClassView } from "@/lib/live/types";
-import type { LiveBusPayload } from "@/lib/live/public-bus";
+import { publishLiveBusBrowser, type LiveBusPayload } from "@/lib/live/public-bus";
 import { useAppStore } from "@/lib/store";
 import { prettyPersonName } from "@/lib/person-name";
 import type { CourseId } from "@/lib/content/courses";
@@ -100,19 +100,19 @@ export function LiveClassProvider({ children }: { children: ReactNode }) {
 
   const publishBus = useCallback((next: LiveClassView, status: "live" | "ended" = next.session.status) => {
     if (next.role !== "host") return;
-    void publishLiveBus({
-      data: {
-        v: 1,
-        code: next.session.id,
-        courseId: next.session.courseId,
-        title: next.session.title,
-        moduleId: next.session.currentModuleId,
-        slide: next.session.currentSlide,
-        status,
-        hostName: hostNameRef.current,
-        at: Date.now(),
-      },
-    }).catch(() => undefined);
+    const payload: LiveBusPayload = {
+      v: 1,
+      code: next.session.id,
+      courseId: next.session.courseId,
+      title: next.session.title,
+      moduleId: next.session.currentModuleId,
+      slide: next.session.currentSlide,
+      status,
+      hostName: hostNameRef.current,
+      at: Date.now(),
+    };
+    void publishLiveBusBrowser(payload);
+    void publishLiveBus({ data: payload }).catch(() => undefined);
   }, []);
 
   const refresh = useCallback(async () => {
@@ -333,7 +333,7 @@ export function LiveClassProvider({ children }: { children: ReactNode }) {
     const beat = window.setInterval(() => {
       const current = viewRef.current;
       if (current && current.role === "host") publishBus(current);
-    }, 8000);
+    }, 4000);
     return () => window.clearInterval(beat);
   }, [view?.session.id, view?.role, publishBus]);
 

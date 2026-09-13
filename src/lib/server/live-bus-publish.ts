@@ -2,7 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { authMiddleware } from "@/lib/auth/middleware";
 import { getCourse } from "@/lib/content/courses";
 import { normalizeCode } from "@/lib/live/codes";
-import { liveBusUrl, type LiveBusPayload } from "@/lib/live/public-bus";
+import {
+  LIVE_BUS_HOSTS,
+  liveBusTopic,
+  type LiveBusPayload,
+} from "@/lib/live/public-bus";
 
 /** Presenter laptop publishes the live slide so phones on the public site can follow. */
 export const publishLiveBus = createServerFn({ method: "POST" })
@@ -26,16 +30,23 @@ export const publishLiveBus = createServerFn({ method: "POST" })
     } satisfies LiveBusPayload;
   })
   .handler(async ({ data }) => {
-    const res = await fetch(liveBusUrl(data.code), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Title: "cft-live",
-        Cache: "yes",
-      },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) {
+    const body = JSON.stringify(data);
+    const topic = liveBusTopic(data.code);
+    const results = await Promise.allSettled(
+      LIVE_BUS_HOSTS.map(async (host) => {
+        const res = await fetch(`${host}/${topic}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain; charset=utf-8",
+            Title: "cft-live",
+            Cache: "yes",
+          },
+          body,
+        });
+        if (!res.ok) throw new Error(String(res.status));
+      }),
+    );
+    if (!results.some((row) => row.status === "fulfilled")) {
       throw new Error("Could not publish the live class.");
     }
     return { ok: true as const };

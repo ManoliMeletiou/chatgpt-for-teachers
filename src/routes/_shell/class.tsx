@@ -8,7 +8,7 @@ import { PresenterInbox } from "@/components/live/presenter-inbox";
 import { PresenterAccount } from "@/components/presenter-account";
 import { EndCourseButton } from "@/components/live/end-course";
 import { PrivatePreviewNotice } from "@/components/live/private-preview-notice";
-import { joinUrlFor, joinUrlLooksGated } from "@/lib/join-share";
+import { joinUrlFor } from "@/lib/join-share";
 import {
   BookletBody,
   formatElapsed,
@@ -241,7 +241,6 @@ function HostRoom() {
   const online = (roster ?? view.members).filter((m) => m.online).length;
   const people = (roster ?? view.members).filter((m) => m.role !== "host");
   const lasted = formatElapsed(view.session.createdAt, view.session.endedAt);
-  const gated = joinUrlLooksGated(joinUrl);
 
   return (
     <Page
@@ -280,6 +279,16 @@ function HostRoom() {
           <p className="mt-4 text-center font-display text-3xl tracking-[0.18em]">
             {displayCode(view.session.id)}
           </p>
+          {joinUrl ? (
+            <a
+              href={joinUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-2 block break-all text-center font-mono text-[11px] text-ink-soft underline decoration-line-strong"
+            >
+              {joinUrl}
+            </a>
+          ) : null}
           <button
             type="button"
             className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-md text-sm text-ink-soft hover:bg-line/60 hover:text-ink"
@@ -294,11 +303,9 @@ function HostRoom() {
             {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
             {copied ? "Copied" : "Copy join link"}
           </button>
-          {gated ? (
-            <div className="mt-3 border-t border-line pt-3">
-              <PrivatePreviewNotice variant="note" />
-            </div>
-          ) : null}
+          <div className="mt-3 border-t border-line pt-3">
+            <PrivatePreviewNotice variant="note" />
+          </div>
         </div>
 
         <div className="space-y-4">

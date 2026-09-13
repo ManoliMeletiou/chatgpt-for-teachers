@@ -15,12 +15,19 @@ export type LiveBusPayload = {
 
 export const LIVE_BUS_PREFIX = "cftnl";
 
+/** Public ntfy hosts. ntfy.sh is rate-limited; these accept anonymous class beacons. */
+export const LIVE_BUS_HOSTS = [
+  "https://ntfy.adminforge.de",
+  "https://ntfy.envs.net",
+  "https://ntfy.mzte.de",
+] as const;
+
 export function liveBusTopic(code: string): string {
   return `${LIVE_BUS_PREFIX}${normalizeCode(code).toLowerCase()}`;
 }
 
-export function liveBusUrl(code: string): string {
-  return `https://ntfy.sh/${liveBusTopic(code)}`;
+export function liveBusUrl(code: string, host: string = LIVE_BUS_HOSTS[0]): string {
+  return `${host}/${liveBusTopic(code)}`;
 }
 
 export function parseLiveBusPayload(raw: unknown): LiveBusPayload | null {
@@ -47,6 +54,19 @@ export function parseLiveBusPayload(raw: unknown): LiveBusPayload | null {
   };
 }
 
+function payloadFromNtfyEvent(event: unknown): LiveBusPayload | null {
+  if (!event || typeof event !== "object") return null;
+  const row = event as Record<string, unknown>;
+  if (row.event && row.event !== "message") return null;
+  const message = row.message;
+  if (typeof message !== "string" || !message.trim()) return null;
+  try {
+    return parseLiveBusPayload(JSON.parse(message));
+  } catch {
+    return null;
+  }
+}
+
 export function parseNtfyPollBody(text: string): LiveBusPayload | null {
   const lines = text
     .split("\n")
@@ -54,15 +74,59 @@ export function parseNtfyPollBody(text: string): LiveBusPayload | null {
     .filter(Boolean);
   for (let i = lines.length - 1; i >= 0; i -= 1) {
     try {
-      const event = JSON.parse(lines[i]!) as { message?: string; event?: string };
-      if (event.event && event.event !== "message") continue;
-      if (!event.message) continue;
-      const inner = JSON.parse(event.message) as unknown;
-      const parsed = parseLiveBusPayload(inner);
+      const parsed = payloadFromNtfyEvent(JSON.parse(lines[i]!));
       if (parsed) return parsed;
     } catch {
       // try previous line
     }
   }
-  return null;
+  try {
+    return payloadFromNtfyEvent(JSON.parse(text));
+  } catch {
+    return null;
+  }
+}
+
+export async function pullLiveBusBrowser(code: string): Promise<LiveBusPayload | null> {
+  const topic = liveBusTopic(code);
+  if (topic.length < 8) return null;
+  const results = await Promise.allSettled(
+    LIVE_BUS_HOSTS.map(async (host) => {
+      const res = await fetch(`${host}/${topic}/json?poll=1`, { cache: "no-store" });
+      if (!res.ok) throw new Error(String(res.status));
+      const text = await res.text();
+      const parsed = parseNtfyPollBody(text);
+      if (!parsed) throw new Error("empty");
+      return parsed;
+    }),
+  );
+  let best: LiveBusPayload | null = null;
+  for (const row of results) {
+    if (row.status !== "fulfilled") continue;
+    if (!best || row.value.at >= best.at) best = row.value;
+  }
+  return best;
+}
+
+/** Presenter laptop posts the live slide. Works from the private draft because these hosts allow any origin. */
+export async function publishLiveBusBrowser(payload: LiveBusPayload): Promise<boolean> {
+  const parsed = parseLiveBusPayload(payload);
+  if (!parsed) return false;
+  const body = JSON.stringify(parsed);
+  const topic = liveBusTopic(parsed.code);
+  const results = await Promise.allSettled(
+    LIVE_BUS_HOSTS.map(async (host) => {
+      const res = await fetch(`${host}/${topic}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          Title: "cft-live",
+          Cache: "yes",
+        },
+        body,
+      });
+      if (!res.ok) throw new Error(String(res.status));
+    }),
+  );
+  return results.some((row) => row.status === "fulfilled");
 }

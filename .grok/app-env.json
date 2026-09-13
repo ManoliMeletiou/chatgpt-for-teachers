@@ -1,5 +1,5 @@
 {
-  "VITE_PUBLIC_JOIN_ORIGIN": "https://cdn.jsdelivr.net/gh/ManoliMeletiou/chatgpt-for-teachers@main/docs/index.html",
+  "VITE_PUBLIC_JOIN_ORIGIN": "https://cft-join.vercel.app",
   "deploy": {
     "database": true
   }

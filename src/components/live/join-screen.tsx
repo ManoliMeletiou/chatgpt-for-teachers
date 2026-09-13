@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { getCourse } from "@/lib/content/courses";
 import { getModule } from "@/lib/content/modules";
 import { displayCode } from "@/lib/live/codes";
-import { joinUrlFor, joinUrlLooksGated } from "@/lib/join-share";
+import { joinUrlFor } from "@/lib/join-share";
 
 export function JoinScreen() {
   const live = useLiveClass();
@@ -31,7 +31,6 @@ export function JoinScreen() {
     ? getModule(view.session.currentModuleId)
     : undefined;
   const online = view.members.filter((m) => m.online).length;
-  const gated = joinUrlLooksGated(joinUrl);
 
   return createPortal(
     <div className="hero-field fixed inset-0 z-50 overflow-auto text-accent-fg">
@@ -44,8 +43,8 @@ export function JoinScreen() {
           Scan to join this class.
         </h1>
         <p className="mt-4 max-w-xl text-lg text-accent-fg/85">
-          Teachers sign in on their phone, land on this lesson, and keep their booklet on
-          their own account while you present.
+          Teachers scan this code on their own phone. They land on a public class
+          page, type their name, and stay on your slide. They do not sign in.
         </p>
         <div className="mt-10 grid items-center gap-10 lg:grid-cols-[minmax(0,18rem)_1fr]">
           <div className="rounded-2xl bg-elevated p-4 shadow-[var(--shadow-border)]">
@@ -60,18 +59,22 @@ export function JoinScreen() {
             <p className="mt-2 font-display text-5xl tracking-[0.18em] sm:text-7xl">
               {displayCode(view.session.id)}
             </p>
-            <p className="mt-4 font-mono text-sm text-accent-fg/70 break-all">
-              {joinUrl || "Preparing link…"}
+            <p className="mt-4 break-all font-mono text-sm text-accent-fg/70">
+              {joinUrl ? (
+                <a href={joinUrl} target="_blank" rel="noreferrer" className="underline decoration-accent-fg/40">
+                  {joinUrl}
+                </a>
+              ) : (
+                "Preparing link…"
+              )}
             </p>
             <p className="mt-6 flex items-center gap-2 text-sm text-accent-fg/85">
               <Users className="size-4" />
               {view.memberCount} in the room · {online} active now
             </p>
-            {gated ? (
-              <div className="mt-4 max-w-md">
-                <PrivatePreviewNotice variant="projector" />
-              </div>
-            ) : null}
+            <div className="mt-4 max-w-md">
+              <PrivatePreviewNotice variant="projector" />
+            </div>
           </div>
         </div>
         <div className="mt-10 flex flex-wrap gap-2">

@@ -5,8 +5,9 @@ export function PrivatePreviewNotice({
 }) {
   if (variant === "banner") return null;
   return (
-    <p className="mt-3 text-center text-sm text-ink-soft">
-      Teachers scan this code on their own phones. They type their name and follow the lesson.
+    <p className={variant === "projector" ? "text-sm text-accent-fg/80" : "mt-3 text-center text-sm text-ink-soft"}>
+      This QR opens a public class page on the teacher’s phone. It is not a draft.
+      They type their name and follow the lesson.
     </p>
   );
 }

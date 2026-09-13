@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex" />
   <title>Join class · ChatGPT for Teachers</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -53,6 +54,7 @@
       font: inherit;
       background: #fff;
     }
+    textarea { min-height: 7rem; }
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
       min-height: 48px; width: 100%; border: 0; border-radius: 8px;
@@ -84,6 +86,15 @@
 <body>
   <div id="app"></div>
   <script>
+    const BUS_HOSTS = [
+      "https://ntfy.adminforge.de",
+      "https://ntfy.envs.net",
+      "https://ntfy.mzte.de",
+    ];
+    const CONTENT_URLS = [
+      "content.json",
+      "https://cdn.jsdelivr.net/gh/ManoliMeletiou/chatgpt-for-teachers@main/docs/content.json",
+    ];
     const TOPIC = (code) => "cftnl" + String(code).toUpperCase().replace(/[^A-Z0-9]/g, "").toLowerCase();
     const params = new URLSearchParams(location.search);
     const hashCode = (location.hash.match(/join\/([A-Za-z0-9]+)/i) || [])[1];
@@ -94,53 +105,85 @@
     let live = null;
     let name = sessionStorage.getItem("cft-guest-name") || "";
     let joined = false;
-    let notes = JSON.parse(sessionStorage.getItem("cft-notes") || "{}");
+    let notes = {};
+    try { notes = JSON.parse(sessionStorage.getItem("cft-notes") || "{}"); } catch (e) { notes = {}; }
 
     function displayCode(c) {
-      const n = c.toUpperCase();
+      const n = String(c || "").toUpperCase();
       return n.length === 6 ? n.slice(0, 3) + " " + n.slice(3) : n;
     }
     function moduleOf(id) {
-      return content.modules.find((m) => m.id === id || m.slug === id);
+      if (!content || !id) return null;
+      return content.modules.find((m) => m.id === id || m.slug === id) || null;
     }
     function escapeHtml(s) {
-      return String(s || "").replace(/[&<>"']/g, (ch) => ({
-        "&": "&", "<": "<", ">": ">", '"': """, "'": "&#39;"
-      }[ch]));
+      return String(s || "").replace(/[&<>"']/g, (ch) => {
+        if (ch === "&") return "&" + "amp;";
+        if (ch === "<") return "&" + "lt;";
+        if (ch === ">") return "&" + "gt;";
+        if (ch === '"') return "&" + "quot;";
+        return "&#39;";
+      });
     }
 
-    async function pullLive() {
-      if (!code) return null;
-      const res = await fetch("https://ntfy.sh/" + TOPIC(code) + "/json?poll=1", { cache: "no-store" });
+    function payloadFromEvent(event) {
+      if (!event || typeof event !== "object") return null;
+      if (event.event && event.event !== "message") return null;
+      if (!event.message) return null;
+      try {
+        const payload = JSON.parse(event.message);
+        if (payload && payload.v === 1 && payload.code) return payload;
+      } catch (e) {}
+      return null;
+    }
+
+    async function pullFrom(host, topic) {
+      const res = await fetch(host + "/" + topic + "/json?poll=1", { cache: "no-store" });
       if (!res.ok) return null;
       const text = await res.text();
       const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
       for (let i = lines.length - 1; i >= 0; i--) {
         try {
-          const ev = JSON.parse(lines[i]);
-          if (ev.event && ev.event !== "message") continue;
-          const payload = JSON.parse(ev.message);
-          if (payload && payload.v === 1 && payload.status !== "ended") return payload;
-        } catch {}
+          const parsed = payloadFromEvent(JSON.parse(lines[i]));
+          if (parsed) return parsed;
+        } catch (e) {}
       }
       return null;
     }
 
+    async function pullLive() {
+      if (!code) return null;
+      const topic = TOPIC(code);
+      const rows = await Promise.all(BUS_HOSTS.map((host) => pullFrom(host, topic).catch(() => null)));
+      let best = null;
+      for (const row of rows) {
+        if (!row || row.status === "ended") continue;
+        if (!best || (row.at || 0) >= (best.at || 0)) best = row;
+      }
+      return best;
+    }
+
     function renderJoin(message) {
-      app.innerHTML = `
-        <main class="join">
-          <p class="kicker wait">${code ? "Joining " + displayCode(code) : "Join a live class"}</p>
-          <h1 class="display" style="font-size:2rem;margin:0.4rem 0 0">${live ? escapeHtml(live.title) : "Scan to follow the lesson."}</h1>
-          <p style="opacity:.9;max-width:28rem">${live ? "Type your name, then you stay on the presenter’s slide." : (message || "Open the room on the presenting laptop first, then scan again.")}</p>
-          <form class="card" id="form">
-            ${code ? "" : `<label class="kicker" style="color:#5c564c">Class code</label><input id="codein" placeholder="L7S M9Y" value="${escapeHtml(code)}" autocomplete="off" />`}
-            <label class="kicker" style="color:#5c564c;display:block;margin-top:${code ? "0" : "0.9rem"}">Your name</label>
-            <input id="namein" placeholder="First name" value="${escapeHtml(name)}" autocomplete="name" />
-            <p class="err" id="err"></p>
-            <button class="btn" style="margin-top:0.9rem" type="submit">${live ? "Enter the class" : "Look up this class"}</button>
-            <p style="font-size:0.9rem;color:#5c564c;margin:0.8rem 0 0">Use your own phone — not the presenting laptop.</p>
-          </form>
-        </main>`;
+      app.innerHTML =
+        '<main class="join">' +
+          '<p class="kicker wait">' + (code ? "Joining " + displayCode(code) : "Join a live class") + "</p>" +
+          '<h1 class="display" style="font-size:2rem;margin:0.4rem 0 0">' +
+            (live ? escapeHtml(live.title) : "You are on the live class page.") +
+          "</h1>" +
+          '<p style="opacity:.9;max-width:28rem">' +
+            (live
+              ? "Type your name, then you stay on the presenter\u2019s slide."
+              : (message || "This is the public join page \u2014 not a draft. Open the room on the presenting laptop, then enter.")) +
+          "</p>" +
+          '<form class="card" id="form">' +
+            (code ? "" : '<label class="kicker" style="color:#5c564c">Class code</label><input id="codein" placeholder="L7S M9Y" value="' + escapeHtml(code) + '" autocomplete="off" />') +
+            '<label class="kicker" style="color:#5c564c;display:block;margin-top:' + (code ? "0" : "0.9rem") + '">Your name</label>' +
+            '<input id="namein" placeholder="First name" value="' + escapeHtml(name) + '" autocomplete="name" />' +
+            '<p class="err" id="err"></p>' +
+            '<button class="btn" style="margin-top:0.9rem" type="submit">' + (live ? "Enter the class" : "Look up this class") + "</button>" +
+            '<p style="font-size:0.9rem;color:#5c564c;margin:0.8rem 0 0">Use your own phone \u2014 not the presenting laptop. No sign-in.</p>' +
+          "</form>" +
+        "</main>";
       document.getElementById("form").onsubmit = async (e) => {
         e.preventDefault();
         const err = document.getElementById("err");
@@ -152,7 +195,7 @@
         if (name.length < 2) { err.textContent = "Type the name the presenter should see."; return; }
         sessionStorage.setItem("cft-guest-name", name);
         const snap = await pullLive();
-        if (!snap) { err.textContent = "That code is not live yet. Wait for the presenter to open the room."; return; }
+        if (!snap) { err.textContent = "That code is not live yet. Wait for the presenter to open the room, then try again."; return; }
         live = snap;
         joined = true;
         history.replaceState({}, "", "?c=" + code);
@@ -166,29 +209,33 @@
       const i = Math.min(live.slide || 0, Math.max(0, slides.length - 1));
       const slide = slides[i];
       const key = (mod && mod.id) + ":" + i;
-      app.innerHTML = `
-        <header class="follow">
-          <p class="kicker" style="margin:0;opacity:.85">Following ${displayCode(code)}${name ? " · " + escapeHtml(name) : ""}</p>
-          <h1 class="display" style="margin:0.15rem 0 0;font-size:1.2rem">${mod ? escapeHtml(mod.title) : "Waiting for the next slide"}</h1>
-        </header>
-        <div class="stage">
-          ${slide ? `
-            <p class="kicker" style="color:var(--teal);margin:0">Slide ${i + 1} of ${slides.length}</p>
-            <h2 class="display" style="font-size:1.7rem;margin:0.35rem 0 0.7rem">${escapeHtml(slide.title)}</h2>
-            ${(slide.paras || []).map((p) => `<p>${escapeHtml(p)}</p>`).join("")}
-            ${(slide.items || []).map((it) => `<div class="item"><div class="n">${escapeHtml(it.n)}</div><div><strong>${escapeHtml(it.title)}</strong><div style="color:#5c564c">${escapeHtml(it.body)}</div></div></div>`).join("")}
-            ${slide.avoid ? `<p><strong>Risky habit.</strong> ${escapeHtml(slide.avoid)}</p>` : ""}
-            ${slide.aim ? `<p><strong>Professional habit.</strong> ${escapeHtml(slide.aim)}</p>` : ""}
-            ${slide.lens ? `<p>${escapeHtml(slide.lens)}</p>` : ""}
-          ` : `<p>The presenter is moving the lesson. This page will catch up.</p>`}
-          <div class="note">
-            <p class="kicker" style="color:var(--teal);margin:0">Write here — this phone only</p>
-            <textarea id="note">${escapeHtml(notes[key] || "")}</textarea>
-          </div>
-        </div>
-        <footer class="bar">
-          <p style="margin:0;font-size:0.95rem">The presenter moves the slides. Write in the box under the slide.</p>
-        </footer>`;
+      app.innerHTML =
+        '<header class="follow">' +
+          '<p class="kicker" style="margin:0;opacity:.85">Following ' + displayCode(code) + (name ? " · " + escapeHtml(name) : "") + "</p>" +
+          '<h1 class="display" style="margin:0.15rem 0 0;font-size:1.2rem">' + (mod ? escapeHtml(mod.title) : "Waiting for the next slide") + "</h1>" +
+        "</header>" +
+        '<div class="stage">' +
+          (slide
+            ? '<p class="kicker" style="color:var(--teal);margin:0">Slide ' + (i + 1) + " of " + slides.length + "</p>" +
+              '<h2 class="display" style="font-size:1.7rem;margin:0.35rem 0 0.7rem">' + escapeHtml(slide.title) + "</h2>" +
+              (slide.paras || []).map((p) => "<p>" + escapeHtml(p) + "</p>").join("") +
+              (slide.items || []).map((it) =>
+                '<div class="item"><div class="n">' + escapeHtml(it.n) + "</div><div><strong>" +
+                escapeHtml(it.title) + '</strong><div style="color:#5c564c">' + escapeHtml(it.body) +
+                "</div></div></div>"
+              ).join("") +
+              (slide.avoid ? "<p><strong>Risky habit.</strong> " + escapeHtml(slide.avoid) + "</p>" : "") +
+              (slide.aim ? "<p><strong>Professional habit.</strong> " + escapeHtml(slide.aim) + "</p>" : "") +
+              (slide.lens ? "<p>" + escapeHtml(slide.lens) + "</p>" : "")
+            : "<p>The presenter is moving the lesson. This page will catch up.</p>") +
+          '<div class="note">' +
+            '<p class="kicker" style="color:var(--teal);margin:0">Write here \u2014 this phone only</p>' +
+            '<textarea id="note">' + escapeHtml(notes[key] || "") + "</textarea>" +
+          "</div>" +
+        "</div>" +
+        '<footer class="bar">' +
+          '<p style="margin:0;font-size:0.95rem">The presenter moves the slides. Write in the box under the slide.</p>' +
+        "</footer>";
       const ta = document.getElementById("note");
       if (ta) ta.oninput = () => {
         notes[key] = ta.value;
@@ -204,22 +251,28 @@
         const changed = !live || live.moduleId !== snap.moduleId || live.slide !== snap.slide;
         live = snap;
         if (changed) renderStage();
-      } catch {}
+      } catch (e) {}
     }
 
     (async function start() {
-      try {
-        const res = await fetch("content.json", { cache: "no-store" });
-        content = await res.json();
-      } catch {
-        app.innerHTML = "<p style='padding:2rem'>Could not load the lesson materials.</p>";
+      for (const url of CONTENT_URLS) {
+        try {
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) continue;
+          content = await res.json();
+          if (content && Array.isArray(content.modules)) break;
+          content = null;
+        } catch (e) { content = null; }
+      }
+      if (!content) {
+        app.innerHTML = "<p style='padding:2rem'>Could not load the lesson materials. Check the phone connection and scan again.</p>";
         return;
       }
       if (code.length === 6) {
-        try { live = await pullLive(); } catch { live = null; }
+        try { live = await pullLive(); } catch (e) { live = null; }
       }
       renderJoin();
-      setInterval(tick, 1500);
+      setInterval(tick, 1200);
     })();
   </script>
 </body>
