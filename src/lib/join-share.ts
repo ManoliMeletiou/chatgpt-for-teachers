@@ -5,11 +5,15 @@ import { normalizeCode } from "@/lib/live/codes";
  * Public join page phones actually open. Never the private Grok draft
  * (*.grok-sandbox.com) — that host always answers “you don’t have access
  * to this preview”.
+ *
+ * The dedicated cft-nl-join.vercel.app alias still serves a stale dump
+ * (overlapping “check”, no booklet). The live v2 page is the static
+ * `join.html` on the public workshop host.
  */
-export const PUBLIC_JOIN_PAGE = "https://cft-nl-join.vercel.app";
+export const PUBLIC_JOIN_PAGE = "https://chatgpt-for-teachers.vercel.app/join.html";
 
 export function publicJoinOrigin(): string {
-  return PUBLIC_JOIN_PAGE;
+  return new URL(PUBLIC_JOIN_PAGE).origin;
 }
 
 export function isPrivatePreview(
@@ -40,7 +44,8 @@ export function joinUrlFor(code: string, roomSecret?: string): string | null {
   const c = normalizeCode(code);
   if (c.length !== 6) return null;
   const k = String(roomSecret ?? "").trim().replace(/[^A-Za-z0-9_-]/g, "");
-  const params = new URLSearchParams({ c });
-  if (k.length >= 20) params.set("k", k);
-  return `${PUBLIC_JOIN_PAGE}/?${params.toString()}`;
+  const url = new URL(PUBLIC_JOIN_PAGE);
+  url.searchParams.set("c", c);
+  if (k.length >= 20) url.searchParams.set("k", k);
+  return url.toString();
 }

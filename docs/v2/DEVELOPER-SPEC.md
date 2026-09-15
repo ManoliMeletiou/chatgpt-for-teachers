@@ -40,7 +40,7 @@ Safety line:
 
 The SQL session id remains the readable six-character class code. The v2.0 QR additionally carries a high-entropy room secret:
 
-`https://cft-nl-join.vercel.app/?c=ABCDEF&k=<ROOM_SECRET>`
+`https://chatgpt-for-teachers.vercel.app/join.html?c=ABCDEF&k=<ROOM_SECRET>`
 
 The six-character code is **not** an encryption key. The secret is generated in the presenting browser and stored for that browser session.
 
