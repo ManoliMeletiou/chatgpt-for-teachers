@@ -1,7 +1,7 @@
-import { getCourse, type Course, type CourseId } from "./courses";
-import { diagnosticItems } from "./diagnostic";
-import { getModule, modules } from "./modules";
-import { workbookSteps, type WorkbookStep } from "./workbook";
+import { getCourse, type Course, type CourseId } from "./courses.ts";
+import { diagnosticItems } from "./diagnostic.ts";
+import { getModule, modules } from "./modules.ts";
+import { workbookSteps, type WorkbookStep } from "./workbook.ts";
 
 /** Workbook step → the modules it belongs to. */
 export const workbookModuleIds: Record<string, string[]> = {

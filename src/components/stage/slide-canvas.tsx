@@ -243,6 +243,15 @@ export function SlideCanvas({ slide }: { slide: Slide }) {
             {view.warning}
           </p>
         )}
+
+        {view.sources.length > 0 && (
+          <div className="mt-7 rounded-lg border border-line bg-paper/75 px-4 py-3 text-xs leading-relaxed text-muted">
+            <p className="mb-1 font-semibold uppercase tracking-[0.13em] text-ink-soft">Evidence note</p>
+            {view.sources.map((source) => (
+              <p key={source}>{source}</p>
+            ))}
+          </div>
+        )}
       </div>
     </article>
   );

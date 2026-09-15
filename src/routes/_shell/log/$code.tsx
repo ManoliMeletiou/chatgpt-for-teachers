@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
-import { ArrowLeft, Award, BookMarked, Printer } from "lucide-react";
+import { createFileRoute, Link, Navigate, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, Award, BookMarked, Printer, Trash2 } from "lucide-react";
 import { Page } from "@/components/layout/app-shell";
 import { PresenterAccount } from "@/components/presenter-account";
 import {
@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getCourse } from "@/lib/content/courses";
 import { displayCode, normalizeCode } from "@/lib/live/codes";
-import { getPresenterRoom, type PresenterRoom } from "@/lib/server/submissions";
+import { deletePresenterRoom, getPresenterRoom, type PresenterRoom } from "@/lib/server/submissions";
 import { usePreviewAuth } from "@/lib/use-preview-auth";
 import { cn } from "@/lib/utils";
 
@@ -30,10 +30,14 @@ export const Route = createFileRoute("/_shell/log/$code")({
 
 function SessionLogPage() {
   const { code: raw } = Route.useParams();
+  const navigate = useNavigate();
   const code = normalizeCode(raw);
   const { signedIn, resolving } = usePreviewAuth();
   const [room, setRoom] = useState<PresenterRoom | null | undefined>(undefined);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
   const { job, print } = usePrintJob();
 
   useEffect(() => {
@@ -247,6 +251,48 @@ function SessionLogPage() {
           );
         })}
       </ul>
+
+      <section className="mt-8 rounded-xl border border-red/25 bg-red-bg/45 p-5 sm:p-6" aria-labelledby="retention-heading">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-red">Data retention</p>
+        <h2 id="retention-heading" className="mt-1 font-display text-2xl text-ink">Keep only what the workshop needs.</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-ink-soft">
+          Export anything the school genuinely needs, then remove this class when the purpose is finished. Set a documented retention period with the school; do not keep named participation and booklet data indefinitely by default.
+        </p>
+        {room.status === "live" ? (
+          <p className="mt-4 text-sm font-semibold text-red">End this class before deleting its records.</p>
+        ) : !confirmDelete ? (
+          <Button className="mt-4" variant="danger" onClick={() => setConfirmDelete(true)}>
+            <Trash2 className="size-4" />
+            Delete this class data
+          </Button>
+        ) : (
+          <div className="mt-4 rounded-lg border border-red/30 bg-surface p-4">
+            <p className="text-sm font-semibold text-ink">Delete {displayCode(room.id)} permanently?</p>
+            <p className="mt-1 text-sm text-ink-soft">This removes the class record, roster and stored signed-in booklet submissions from this desk. It cannot be undone.</p>
+            {deleteError && <p className="mt-2 text-sm font-semibold text-red">{deleteError}</p>}
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Button
+                variant="danger"
+                disabled={deleting}
+                onClick={() => {
+                  setDeleting(true);
+                  setDeleteError("");
+                  void deletePresenterRoom({ data: { code: room.id } })
+                    .then(() => navigate({ to: "/log" }))
+                    .catch((error: unknown) => {
+                      setDeleteError(error instanceof Error ? error.message : "Could not delete the class.");
+                      setDeleting(false);
+                    });
+                }}
+              >
+                <Trash2 className="size-4" />
+                {deleting ? "Deleting…" : "Yes, delete permanently"}
+              </Button>
+              <Button variant="secondary" disabled={deleting} onClick={() => setConfirmDelete(false)}>Cancel</Button>
+            </div>
+          </div>
+        )}
+      </section>
 
       <SessionPrintPack room={room} job={job} />
     </Page>

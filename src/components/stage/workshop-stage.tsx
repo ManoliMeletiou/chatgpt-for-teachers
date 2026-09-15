@@ -23,6 +23,7 @@ import { EndCourseButton } from "@/components/live/end-course";
 import { PresenterAccount } from "@/components/presenter-account";
 import { Button } from "@/components/ui/button";
 import { getCourse } from "@/lib/content/courses";
+import { firstLiveSlide, lastLiveSlide, livePosition, liveSlideIndexes } from "@/lib/content/delivery";
 import { strandLabel, type CourseModule } from "@/lib/content/modules";
 import {
   adjacentInCourse,
@@ -46,14 +47,19 @@ export function WorkshopStage({ mod }: { mod: CourseModule }) {
   const workbook = useAppStore((s) => s.workbook);
   const locked = Boolean(live.view && !live.isHost);
   const liveOnThis = locked && live.view?.session.currentModuleId === mod.id;
-  const slideCount = mod.slides.length;
-  const i = Math.min(
-    liveOnThis ? live.view!.session.currentSlide : idx,
-    Math.max(0, slideCount - 1),
-  );
-  const slide = mod.slides[i];
-  const last = i === slideCount - 1;
   const course = getCourse(live.view?.session.courseId ?? enrolled ?? "");
+  // Solo mode remains the full reference library. Live rooms use the curated
+  // delivery route that fits the advertised course length. Raw slide indices
+  // are preserved so the public phone protocol stays compatible.
+  const deliveryCourse = live.view ? course : undefined;
+  const liveIds = liveSlideIndexes(deliveryCourse, mod);
+  const requested = Math.max(0, Math.min(mod.slides.length - 1, liveOnThis ? live.view!.session.currentSlide : idx));
+  const i = liveIds.includes(requested) ? requested : (liveIds[0] ?? 0);
+  const slide = mod.slides[i];
+  const position = livePosition(deliveryCourse, mod, i);
+  const slidePos = position.pos;
+  const slideCount = position.count;
+  const last = slidePos === slideCount - 1;
   const { prev, next } = adjacentInCourse(course, mod.id);
   const step = workbookStepForModule(mod.id);
   const filled = step ? stepFilledCount(step, workbook) : 0;
@@ -66,15 +72,15 @@ export function WorkshopStage({ mod }: { mod: CourseModule }) {
   const [cueOpen, setCueOpen] = useState(true);
 
   const go = useCallback(
-    (n: number) => {
+    (rawIndex: number) => {
       if (locked) return;
-      const clamped = Math.max(0, Math.min(slideCount - 1, n));
-      setSlide(mod.id, clamped);
-      if (live.isHost) live.broadcast(mod.id, clamped);
-      if (clamped === slideCount - 1) complete(mod.id);
+      const nextRaw = liveIds.includes(rawIndex) ? rawIndex : (liveIds[0] ?? 0);
+      setSlide(mod.id, nextRaw);
+      if (live.isHost) live.broadcast(mod.id, nextRaw);
+      if (nextRaw === (liveIds[liveIds.length - 1] ?? 0)) complete(mod.id);
       setClosing(false);
     },
-    [complete, live, locked, mod.id, setSlide, slideCount],
+    [complete, live, liveIds, locked, mod.id, setSlide],
   );
 
   useEffect(() => {
@@ -85,18 +91,20 @@ export function WorkshopStage({ mod }: { mod: CourseModule }) {
     if (locked) return;
     if (closing) return;
     if (!last) {
-      go(i + 1);
+      go(liveIds[slidePos + 1] ?? i);
       return;
     }
     complete(mod.id);
     if (next) {
-      if (live.isHost) live.broadcast(next.id, 0);
+      const first = firstLiveSlide(deliveryCourse, next);
+      setSlide(next.id, first);
+      if (live.isHost) live.broadcast(next.id, first);
       void navigate({ to: "/modules/$moduleId", params: { moduleId: next.slug } });
       return;
     }
     setClosing(true);
     setBookletOpen(true);
-  }, [closing, complete, go, i, last, live, locked, mod.id, navigate, next]);
+  }, [closing, complete, deliveryCourse, go, i, last, live, liveIds, locked, mod.id, navigate, next, setSlide, slidePos]);
 
   const goPrev = useCallback(() => {
     if (locked) return;
@@ -104,16 +112,16 @@ export function WorkshopStage({ mod }: { mod: CourseModule }) {
       setClosing(false);
       return;
     }
-    if (i > 0) {
-      go(i - 1);
+    if (slidePos > 0) {
+      go(liveIds[slidePos - 1] ?? i);
       return;
     }
     if (!prev) return;
-    const lastSlide = Math.max(0, prev.slides.length - 1);
+    const lastSlide = lastLiveSlide(deliveryCourse, prev);
     if (live.isHost) live.broadcast(prev.id, lastSlide);
     setSlide(prev.id, lastSlide);
     void navigate({ to: "/modules/$moduleId", params: { moduleId: prev.slug } });
-  }, [closing, go, i, live, locked, navigate, prev, setSlide]);
+  }, [closing, deliveryCourse, go, i, live, liveIds, locked, navigate, prev, setSlide, slidePos]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -326,7 +334,7 @@ export function WorkshopStage({ mod }: { mod: CourseModule }) {
           <div className="mx-auto flex max-w-5xl items-center gap-3">
             <p className="min-w-0 flex-1 text-sm text-paper">
               <span className="font-medium tabular-nums">
-                Slide {i + 1} of {mod.slides.length}
+                Slide {slidePos + 1} of {slideCount}
               </span>
               {modulePos >= 0 ? (
                 <span className="hidden sm:inline">
@@ -352,7 +360,7 @@ export function WorkshopStage({ mod }: { mod: CourseModule }) {
           <div className="mx-auto flex max-w-5xl items-center gap-3">
             <Button
               className="h-12 w-24 shrink-0 bg-paper/15 text-accent-fg hover:bg-paper/25 sm:w-32"
-              disabled={!closing && i === 0 && !prev}
+              disabled={!closing && slidePos === 0 && !prev}
               onClick={goPrev}
             >
               <ArrowLeft />
@@ -360,16 +368,16 @@ export function WorkshopStage({ mod }: { mod: CourseModule }) {
             </Button>
             <div className="min-w-0 flex-1 text-center">
               <p className="text-sm tabular-nums text-accent-fg">
-                {closing ? "End of the course" : `${i + 1} of ${mod.slides.length}`}
+                {closing ? "End of the course" : `${slidePos + 1} of ${slideCount}`}
               </p>
-              {mod.slides.length <= 10 && (
+              {slideCount <= 10 && (
                 <div className="mt-1 hidden justify-center sm:flex">
-                  {mod.slides.map((_, n) => (
+                  {liveIds.map((raw, n) => (
                     <button
-                      key={n}
+                      key={raw}
                       type="button"
                       aria-label={`Slide ${n + 1}`}
-                      onClick={() => go(n)}
+                      onClick={() => go(raw)}
                       className="flex size-8 items-center justify-center"
                     >
                       <span
@@ -377,9 +385,9 @@ export function WorkshopStage({ mod }: { mod: CourseModule }) {
                           "block size-2 rounded-full",
                           closing
                             ? "bg-paper/40"
-                            : n === i
+                            : n === slidePos
                               ? "bg-paper"
-                              : n < i
+                              : n < slidePos
                                 ? "bg-paper/50"
                                 : "bg-paper/25",
                         )}
@@ -405,7 +413,7 @@ export function WorkshopStage({ mod }: { mod: CourseModule }) {
             <Button
               variant="secondary"
               className="h-12 w-24 shrink-0 sm:w-32"
-              disabled={!closing && i === 0 && !prev}
+              disabled={!closing && slidePos === 0 && !prev}
               onClick={goPrev}
             >
               <ArrowLeft />
@@ -413,16 +421,16 @@ export function WorkshopStage({ mod }: { mod: CourseModule }) {
             </Button>
             <div className="min-w-0 flex-1 text-center">
               <p className="text-sm tabular-nums text-ink">
-                {closing ? "End of the course" : `${i + 1} of ${mod.slides.length}`}
+                {closing ? "End of the course" : `${slidePos + 1} of ${slideCount}`}
               </p>
-              {mod.slides.length <= 10 && (
+              {slideCount <= 10 && (
                 <div className="mt-1 hidden justify-center sm:flex">
-                  {mod.slides.map((_, n) => (
+                  {liveIds.map((raw, n) => (
                     <button
-                      key={n}
+                      key={raw}
                       type="button"
                       aria-label={`Slide ${n + 1}`}
-                      onClick={() => go(n)}
+                      onClick={() => go(raw)}
                       className="flex size-8 items-center justify-center"
                     >
                       <span
@@ -430,9 +438,9 @@ export function WorkshopStage({ mod }: { mod: CourseModule }) {
                           "block size-2 rounded-full",
                           closing
                             ? "bg-accent/40"
-                            : n === i
+                            : n === slidePos
                               ? "bg-accent"
-                              : n < i
+                              : n < slidePos
                                 ? "bg-accent/40"
                                 : "bg-line-strong",
                         )}

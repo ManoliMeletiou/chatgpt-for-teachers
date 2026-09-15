@@ -1,4 +1,4 @@
-import type { CourseModule, Slide, SlideItem, SlideKind } from "./modules";
+import type { CourseModule, Slide, SlideItem, SlideKind } from "./modules.ts";
 
 function items(rows: Array<[string, string, string]>): SlideItem[] {
   return rows.map(([n, title, body]) => ({ n, title, body }));

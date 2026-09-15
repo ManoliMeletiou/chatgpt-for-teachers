@@ -9,7 +9,7 @@ function LegalPage() {
     <Page
       kicker="Mandatory participant reference"
       title="Safe & legal use of ChatGPT in Dutch schools"
-      lead="Netherlands teacher edition · v1.2 · 10 September 2026. Educational guidance, not legal advice or compliance certification."
+      lead="Netherlands teacher edition · v2.0 · 15 September 2026. Educational guidance, not legal advice or compliance certification."
     >
       <div className="rounded-xl bg-accent p-6 text-accent-fg sm:p-8">
         <p className="text-[11px] uppercase tracking-[0.16em] text-accent-fg/70">

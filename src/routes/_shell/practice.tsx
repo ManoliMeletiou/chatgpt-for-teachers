@@ -47,12 +47,8 @@ function PracticePage() {
     setBusy(true);
     try {
       const result = await runPractice({ data: { prompt } });
-      if (!result.ok) {
-        setError(result.error);
-      } else {
-        setReply(result.text);
-        add({ prompt, reply: result.text, at: Date.now() });
-      }
+      setReply(result.text);
+      add({ prompt, reply: result.text, at: Date.now() });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Practice failed.");
     } finally {
@@ -64,7 +60,7 @@ function PracticePage() {
     <Page
       kicker="Practice sandbox"
       title="Rehearse a brief on synthetic data only."
-      lead="This sandbox is for low-risk professional practice. It is not your school’s approved ChatGPT workspace, and it is not a place for real student information."
+      lead="This sandbox is a local SCOPE-V coach for synthetic data only. It does not send your brief to another AI provider, and it is not a school-approved ChatGPT workspace."
     >
       <div className="rounded-xl border border-amber bg-amber-bg p-5 text-amber">
         <p className="font-medium">Hard rule</p>

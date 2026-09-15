@@ -10,6 +10,7 @@ import { PresenterAccount } from "@/components/presenter-account";
 import { EndCourseButton } from "@/components/live/end-course";
 import { PrivatePreviewNotice } from "@/components/live/private-preview-notice";
 import { joinUrlFor } from "@/lib/join-share";
+import { getOrCreateRoomSecret } from "@/lib/live/room-secret";
 import {
   BookletBody,
   formatElapsed,
@@ -198,7 +199,7 @@ function HostRoom() {
   const view = live.view!;
   const course = getCourse(view.session.courseId);
   const [joinUrl, setJoinUrl] = useState<string | null>(() =>
-    typeof window === "undefined" ? null : joinUrlFor(view.session.id),
+    typeof window === "undefined" ? null : joinUrlFor(view.session.id, getOrCreateRoomSecret(view.session.id)),
   );
   const [copied, setCopied] = useState(false);
   const [roster, setRoster] = useState<RosterRow[] | null>(null);
@@ -206,7 +207,7 @@ function HostRoom() {
   const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
-    setJoinUrl(joinUrlFor(view.session.id));
+    setJoinUrl(joinUrlFor(view.session.id, getOrCreateRoomSecret(view.session.id)));
     live.setShowJoinScreen(false);
   }, [view.session.id]);
 

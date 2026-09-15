@@ -1,4 +1,4 @@
-import type { Slide, SlideKind } from "./modules";
+import type { Slide, SlideKind } from "./modules.ts";
 
 export type ViewItem = {
   n: string;
@@ -16,6 +16,7 @@ export type SlideViewModel = {
   minutes: number;
   paras: string[];
   items: ViewItem[];
+  sources: string[];
   steps: string[];
   path: string[];
   journey: boolean;
@@ -59,6 +60,16 @@ function stripDeckPage(value: string): string {
   const trimmed = tidy(value);
   if (trimmed.length < 8) return trimmed;
   return trimmed.replace(DECK_PAGE_RE, "").trim();
+}
+
+function splitEvidence(value: string): { text: string; source: string } {
+  const clean = stripDeckPage(value);
+  // Some imported slide copy had its citation register glued onto an aim/lens
+  // sentence. Keep the teaching sentence in the card and move the citation to
+  // the compact evidence footer instead of displaying a wall of source text.
+  const match = clean.match(/^(.*?)(?:\s+\d{1,3})?\s+(Sources?:\s+.+)$/i);
+  if (!match?.[1] || !match[2]) return { text: clean, source: "" };
+  return { text: tidy(match[1]), source: tidy(match[2]) };
 }
 
 function splitBullets(value: string): string[] {
@@ -136,8 +147,8 @@ function parseAvoidAim(slide: Slide, paras: string[]) {
       aimBody: cleaned[3] ?? "",
     };
   }
-  const avoidRaw = stripDeckPage(slide.avoid);
-  const aimRaw = stripDeckPage(slide.aim);
+  const avoidRaw = splitEvidence(slide.avoid).text;
+  const aimRaw = splitEvidence(slide.aim).text;
   return {
     lead: cleaned[0] ?? "",
     avoidLabel: "Avoid",
@@ -156,18 +167,29 @@ export function viewOf(slide: Slide): SlideViewModel {
       : {
           lead: numbered.lead,
           avoidLabel: "Avoid",
-          avoidBody: stripDeckPage(slide.avoid),
+          avoidBody: splitEvidence(slide.avoid).text,
           aimLabel: "Aim for",
-          aimBody: stripDeckPage(slide.aim),
+          aimBody: splitEvidence(slide.aim).text,
         };
 
-  const items = slide.items
+  const mappedItems = slide.items
     .map((item) => ({
       n: item.n,
       title: tidy(item.title),
       body: tidy(item.body),
     }))
     .filter((item) => item.title || item.body);
+  // Source-register lines belong in a compact evidence footer, not as giant
+  // interactive checklist cards. This was one of the biggest visual problems
+  // in the v1.2 renderer.
+  const sources = mappedItems
+    .filter((item) => /^sources?(?: checked)?\b/i.test(item.title))
+    .map((item) => [item.title, item.body].filter(Boolean).join(" — "));
+  for (const raw of [slide.avoid, slide.aim, slide.lens]) {
+    const evidence = splitEvidence(raw).source;
+    if (evidence && !sources.includes(evidence)) sources.push(evidence);
+  }
+  const items = mappedItems.filter((item) => !/^sources?(?: checked)?\b/i.test(item.title));
 
   const warning =
     [...rest, ...numbered.leftover].find((p) => /^no real student/i.test(p.trim())) ?? "";
@@ -175,7 +197,7 @@ export function viewOf(slide: Slide): SlideViewModel {
   const pathSource = rest.find((p) => p.includes("→")) ?? "";
   const path = pathSource ? pathSource.split("→").map(tidy).filter(Boolean) : [];
 
-  const lens = stripDeckPage(slide.lens);
+  const lens = splitEvidence(slide.lens).text;
   const prompt = extractPrompt(rest, lens);
 
   let lead = numbered.lead || rest[0] || "";
@@ -213,6 +235,7 @@ export function viewOf(slide: Slide): SlideViewModel {
     minutes,
     paras: displayParas.map(tidy).filter(Boolean),
     items,
+    sources,
     steps: numbered.steps,
     path,
     journey,

@@ -10,6 +10,7 @@ import { getCourse } from "@/lib/content/courses";
 import { getModule } from "@/lib/content/modules";
 import { displayCode } from "@/lib/live/codes";
 import { joinUrlFor } from "@/lib/join-share";
+import { getOrCreateRoomSecret } from "@/lib/live/room-secret";
 
 export function JoinScreen() {
   const live = useLiveClass();
@@ -18,7 +19,7 @@ export function JoinScreen() {
   const code = live.view?.session.id ?? "";
 
   useEffect(() => {
-    setJoinUrl(code ? joinUrlFor(code) : null);
+    setJoinUrl(code ? joinUrlFor(code, getOrCreateRoomSecret(code)) : null);
   }, [code]);
 
   if (!live.showJoinScreen || !live.view || !live.isHost) return null;
@@ -43,8 +44,8 @@ export function JoinScreen() {
           Scan to join this class.
         </h1>
         <p className="mt-4 max-w-xl text-lg text-accent-fg/85">
-          Teachers scan this code on their own phone. They see the same slide you
-          are on, with the booklet underneath. They do not sign in.
+          Teachers scan this QR on their own phone. They see the same slide you
+          are on, with the booklet underneath. They do not sign in. The QR also carries a private room key so names and booklet answers can be encrypted in transit.
         </p>
         <div className="mt-10 grid items-center gap-10 lg:grid-cols-[minmax(0,18rem)_1fr]">
           <div className="rounded-2xl bg-elevated p-4 shadow-[var(--shadow-border)]">
@@ -55,7 +56,7 @@ export function JoinScreen() {
             )}
           </div>
           <div>
-            <p className="text-[11px] uppercase tracking-[0.18em] text-accent-fg/70">Class code</p>
+            <p className="text-[11px] uppercase tracking-[0.18em] text-accent-fg/70">Class code · slide-follow fallback</p>
             <p className="mt-2 font-display text-5xl tracking-[0.18em] sm:text-7xl">
               {displayCode(view.session.id)}
             </p>
@@ -102,7 +103,7 @@ export function JoinScreen() {
           </Button>
         </div>
         <p className="mt-4 text-sm text-accent-fg/75">
-          Leave this up while people sit down. Next slide on your keyboard moves everyone who is following.
+          Leave this up while people sit down. For the full booklet/presence experience, teachers should scan the QR rather than type only the code. Next slide on your keyboard moves everyone who is following.
         </p>
       </div>
     </div>,

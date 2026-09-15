@@ -1,0 +1,9 @@
+{
+  "name": "ChatGPT for Teachers",
+  "short_name": "CFT NL",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6edd8",
+  "theme_color": "#0c6e66",
+  "icons": []
+}

@@ -36,8 +36,11 @@ export function resolveJoinOrigin(): string {
 }
 
 /** Join URL to put on the QR. Always the public page when a class code exists. */
-export function joinUrlFor(code: string, _origin?: string): string | null {
+export function joinUrlFor(code: string, roomSecret?: string): string | null {
   const c = normalizeCode(code);
   if (c.length !== 6) return null;
-  return `${PUBLIC_JOIN_PAGE}/?c=${c}`;
+  const k = String(roomSecret ?? "").trim().replace(/[^A-Za-z0-9_-]/g, "");
+  const params = new URLSearchParams({ c });
+  if (k.length >= 20) params.set("k", k);
+  return `${PUBLIC_JOIN_PAGE}/?${params.toString()}`;
 }

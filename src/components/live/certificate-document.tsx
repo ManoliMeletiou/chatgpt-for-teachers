@@ -40,7 +40,7 @@ export function CertificateDocument({
                 ChatGPT for Teachers
               </p>
               <p className="text-[10px] uppercase tracking-[0.18em] text-muted">
-                Netherlands · v1.2
+                Netherlands · v2.0
               </p>
             </div>
           </div>

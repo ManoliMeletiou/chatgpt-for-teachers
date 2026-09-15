@@ -38,7 +38,7 @@ function Home() {
 
         <div className="mx-auto max-w-6xl px-5 pb-12 pt-4 sm:px-8 sm:pb-16 sm:pt-10">
           <p className="inline-flex rounded-full bg-paper/15 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-accent-fg">
-            v1.2 · Netherlands · live workshop
+            v2.0 · Netherlands · live workshop
           </p>
           <h1 className="mt-4 max-w-[18ch] font-display text-[2rem] leading-[1.05] sm:text-6xl">
             Use ChatGPT like a teacher. Keep the teacher in control.
@@ -83,7 +83,7 @@ function Home() {
                 the end.
               </p>
               <p className="mt-6 inline-flex items-center gap-2 text-sm font-medium">
-                Join with a code
+                Join the session
                 <ArrowRight className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
               </p>
             </Link>
@@ -283,7 +283,7 @@ function Home() {
 
       <footer className="bg-ink text-accent-fg/70">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <p>ChatGPT for Teachers · v1.2 · Independent professional development.</p>
+          <p>ChatGPT for Teachers · v2.0 · Independent professional development.</p>
           <p>Not OpenAI certified. Not legal advice. Not school approval.</p>
         </div>
       </footer>

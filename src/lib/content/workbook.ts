@@ -131,7 +131,7 @@ export const workbookSteps: WorkbookStep[] = [
     id: "tools",
     n: "10",
     title: "Free-tier tools and limits",
-    lead: "Search, data analysis, images, existing GPTs, plugins/apps — only when they genuinely help.",
+    lead: "Search, data analysis, images, plugins/apps, existing GPTs during migration — only when they genuinely help.",
     fields: [
       { id: "which-tool", label: "Which tool genuinely improves this task?" },
       { id: "permissions", label: "What permissions or data does it require?", multiline: true },

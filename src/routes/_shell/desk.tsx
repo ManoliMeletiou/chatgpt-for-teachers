@@ -104,11 +104,10 @@ function DeskPage() {
           </p>
           <h2 className="mt-1 font-display text-3xl">I’m in this session</h2>
           <p className="mt-3 max-w-md text-paper/90">
-            Enter the code on the screen (or scan the QR). You land on the current slide. Your
-            booklet sits beside it. At the end you send the whole pack to the presenter.
+            Scan the QR for the full live experience. You land on the current slide with your booklet underneath. A typed code is a slide-follow fallback; secure booklet sending uses the QR room key.
           </p>
           <p className="mt-6 inline-flex items-center gap-2 text-sm font-medium">
-            Join with a code
+            Join the session
             <ArrowRight className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
           </p>
         </Link>

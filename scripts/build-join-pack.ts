@@ -42,6 +42,7 @@ const pack = {
           lead: view.lead,
           duration: view.duration,
           paras: view.paras,
+          sources: view.sources,
           items: view.items.map((it) => ({
             n: it.n === "check" ? "check" : it.n,
             title: it.title,

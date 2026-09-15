@@ -2,12 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { normalizeCode } from "@/lib/live/codes";
 import {
   LIVE_BUS_HOSTS,
-  guestsFromPoll,
   liveBusTopic,
-  liveGuestTopic,
   parseLiveBusPayload,
   parseNtfyPollBody,
-  type GuestRow,
   type LiveBusPayload,
 } from "@/lib/live/public-bus";
 
@@ -47,22 +44,4 @@ export const pullLiveBus = createServerFn({ method: "POST" })
       if (!best || row.value.at >= best.at) best = row.value;
     }
     return best;
-  });
-
-/** Presenter laptop: who joined from a phone and which booklets arrived. */
-export const pullGuestRoom = createServerFn({ method: "POST" })
-  .validator((input: { code: string }) => normalizeCode(input.code))
-  .handler(async ({ data: code }): Promise<GuestRow[]> => {
-    if (code.length !== 6) return [];
-    const topic = liveGuestTopic(code);
-    for (const host of LIVE_BUS_HOSTS) {
-      try {
-        const text = await pollHost(host, topic);
-        const rows = guestsFromPoll(text);
-        if (rows.length) return rows;
-      } catch {
-        // try next host
-      }
-    }
-    return [];
   });

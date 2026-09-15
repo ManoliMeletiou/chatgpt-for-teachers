@@ -22,7 +22,8 @@ import {
 import { pullLiveBus } from "@/lib/server/live-bus-pull";
 import { publishLiveBus } from "@/lib/server/live-bus-publish";
 import type { ClosedClass, LiveClassView } from "@/lib/live/types";
-import { publishLiveBusBrowser, type LiveBusPayload } from "@/lib/live/public-bus";
+import { publishLiveBusBrowser, pullGuestRoomBrowser, type LiveBusPayload } from "@/lib/live/public-bus";
+import { getOrCreateRoomSecret } from "@/lib/live/room-secret";
 import { useAppStore } from "@/lib/store";
 import { prettyPersonName } from "@/lib/person-name";
 import type { CourseId } from "@/lib/content/courses";
@@ -95,8 +96,6 @@ export function LiveClassProvider({ children }: { children: ReactNode }) {
   const pullInflight = useRef(false);
   const guestRef = useRef(false);
   guestRef.current = guest;
-  const hostNameRef = useRef(name);
-  hostNameRef.current = name;
 
   const publishBus = useCallback((next: LiveClassView, status: "live" | "ended" = next.session.status) => {
     if (next.role !== "host") return;
@@ -108,7 +107,7 @@ export function LiveClassProvider({ children }: { children: ReactNode }) {
       moduleId: next.session.currentModuleId,
       slide: next.session.currentSlide,
       status,
-      hostName: hostNameRef.current,
+      hostName: "Presenter",
       at: Date.now(),
     };
     void publishLiveBusBrowser(payload);
@@ -330,11 +329,43 @@ export function LiveClassProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!view || view.role !== "host" || view.session.status !== "live") return;
     publishBus(view);
+    let cancelled = false;
+    const mergeGuests = () => {
+      const current = viewRef.current;
+      if (!current || current.role !== "host") return;
+      const secret = getOrCreateRoomSecret(current.session.id);
+      void pullGuestRoomBrowser(current.session.id, secret).then((guests) => {
+        if (cancelled) return;
+        setView((prev) => {
+          if (!prev || prev.role !== "host") return prev;
+          const phones = guests.map((g) => ({
+            userId: `phone:${g.name.toLowerCase()}`,
+            displayName: g.name,
+            role: "participant" as const,
+            joinedAt: new Date(g.lastSeen || Date.now()).toISOString(),
+            lastSeenAt: new Date(g.lastSeen || Date.now()).toISOString(),
+            online: g.online,
+          }));
+          const hosts = prev.members.filter((m) => m.role === "host");
+          const others = prev.members.filter(
+            (m) => m.role !== "host" && !String(m.userId).startsWith("phone:"),
+          );
+          const members = [...hosts, ...phones, ...others];
+          return { ...prev, members, memberCount: members.length };
+        });
+      });
+    };
+    mergeGuests();
     const beat = window.setInterval(() => {
       const current = viewRef.current;
-      if (current && current.role === "host") publishBus(current);
-    }, 4000);
-    return () => window.clearInterval(beat);
+      if (!current || current.role !== "host") return;
+      publishBus(current);
+      mergeGuests();
+    }, 2500);
+    return () => {
+      cancelled = true;
+      window.clearInterval(beat);
+    };
   }, [view?.session.id, view?.role, publishBus]);
 
   const openClass = useCallback(

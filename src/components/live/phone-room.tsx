@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { pullGuestRoom } from "@/lib/server/live-bus-pull";
 import { pullGuestRoomBrowser, type GuestRow } from "@/lib/live/public-bus";
+import { getOrCreateRoomSecret } from "@/lib/live/room-secret";
 
 export function PhoneRoom({ code }: { code: string }) {
   const [rows, setRows] = useState<GuestRow[]>([]);
@@ -9,8 +9,8 @@ export function PhoneRoom({ code }: { code: string }) {
   useEffect(() => {
     let cancelled = false;
     const load = () => {
-      void pullGuestRoom({ data: { code } })
-        .catch(() => pullGuestRoomBrowser(code))
+      const secret = getOrCreateRoomSecret(code);
+      void pullGuestRoomBrowser(code, secret)
         .then((next) => {
           if (!cancelled) setRows(next);
         })

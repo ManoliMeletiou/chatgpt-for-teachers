@@ -26,7 +26,7 @@ export function AppNotFound() {
     <main className="flex min-h-screen flex-col items-center justify-center gap-3 bg-paper px-6 text-center text-ink">
       <h1 className="font-display text-2xl">This page is not on the programme.</h1>
       <p className="max-w-md text-sm text-muted">
-        The module or route you asked for is not part of ChatGPT for Teachers v1.2.
+        The module or route you asked for is not part of ChatGPT for Teachers v2.0.
       </p>
       <a href="/desk" className="mt-2 text-sm font-medium text-accent">
         Return to the desk

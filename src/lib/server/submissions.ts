@@ -295,3 +295,30 @@ export const getPresenterRoom = createServerFn({ method: "POST" })
     if (!s) return null;
     return assembleRoom(sql, s);
   });
+
+
+/**
+ * Delete an ended class and the identifiable workshop records attached to it.
+ * Presenters must end a room first so deleting history cannot strand live phones.
+ * The deletes are deliberately explicit because these tables have no cascading FK.
+ */
+export const deletePresenterRoom = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((input: { code: string }) => normalizeCode(input.code))
+  .handler(async ({ context, data: code }): Promise<{ deleted: boolean }> => {
+    const { getSql } = await import("@/lib/db");
+    const sql = await getSql();
+    const owned = await sql<{ id: string; status: string }>`
+      select id, status from live_sessions
+      where id = ${code} and host_user_id = ${context.userId}
+      limit 1
+    `;
+    const session = owned[0];
+    if (!session) throw new Error("Only the presenter who opened this class can delete it.");
+    if (session.status !== "ended") throw new Error("End the live class before deleting its records.");
+
+    await sql`delete from booklet_submissions where session_id = ${code}`;
+    await sql`delete from session_members where session_id = ${code}`;
+    await sql`delete from live_sessions where id = ${code} and host_user_id = ${context.userId}`;
+    return { deleted: true };
+  });

@@ -80,7 +80,7 @@ export const courses: Course[] = [
     title: "2-hour AI Essentials",
     duration: "120 minutes",
     contact: "2 contact hours",
-    slides: "83-slide reference deck",
+    slides: "44-slide live route · 96-slide reference library",
     bestFor: "A staff introduction or rapid upskilling when the diary will not give you a full day.",
     summary:
       "A usable ChatGPT workflow you can apply tomorrow, with the full Netherlands / EU safety, privacy, assessment and governance core made impossible to miss. Live practice is selective; the safety strand is not.",
@@ -137,7 +137,7 @@ export const courses: Course[] = [
     title: "Half-day workshop",
     duration: "3 hours 30 minutes",
     contact: "200 contact minutes + 10-minute break",
-    slides: "110-slide reference deck",
+    slides: "82-slide live route · 147-slide reference library",
     bestFor: "A school-wide practical workshop: end-to-end workflow with selected hands-on builds.",
     summary:
       "Configure ChatGPT safely, organise work, build Projects, prompt professionally, create resources, use Free-tier tools, verify outputs and operate inside Dutch/EU privacy, assessment and governance boundaries.",
@@ -169,9 +169,9 @@ export const courses: Course[] = [
         moduleIds: ["05", "06", "08", "09", "11"],
       },
       {
-        title: "Free-tier tools, GPTs, research and tasks",
+        title: "Current tools, plugins, research and tasks",
         duration: "25 min",
-        summary: "Permissions, existing GPTs, search, Study Mode, scheduled-task limits.",
+        summary: "Permissions, plugins/apps, GPT migration, search, Study Mode and scheduled-task limits.",
         moduleIds: ["20", "21"],
       },
       {
@@ -194,7 +194,7 @@ export const courses: Course[] = [
     title: "Full-day programme",
     duration: "6 contact hours",
     contact: "360 minutes + two 10-minute breaks + lunch",
-    slides: "111-slide master curriculum",
+    slides: "114-slide live route · 153-slide reference library",
     bestFor: "A complete professional-development day with substantial practice, safety and a capstone.",
     summary:
       "The full practical Teacher AI Workspace: setup through Projects, Resource Studio, tools, scheduled workflows, the entire safe-legal strand, student literacy and a 30-day plan.",
@@ -238,7 +238,7 @@ export const courses: Course[] = [
         moduleIds: ["08", "09", "11", "20"],
       },
       {
-        title: "Plugins, GPTs, research and scheduled tasks",
+        title: "Plugins, GPT migration, research and scheduled tasks",
         duration: "50 min",
         summary: "Permissions, Free-tier limits, repeatable low-risk workflows.",
         moduleIds: ["21"],
@@ -263,7 +263,7 @@ export const courses: Course[] = [
     title: "Multi-session · 6 × 2 hours",
     duration: "12 contact hours",
     contact: "Six sessions × 120 minutes",
-    slides: "111-slide master, spread",
+    slides: "153-slide reference library · 6 paced sessions",
     bestFor: "A sustained implementation programme with between-session application and capstone evidence.",
     summary:
       "The deepest route. Teachers learn the full practical workflow, apply it between sessions, and demonstrate safe, verified professional practice over time.",

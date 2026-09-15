@@ -1,4 +1,4 @@
-import { mathHourModules } from "./math-hour";
+import { mathHourModules } from "./math-hour.ts";
 
 export type Strand = "foundations" | "practice" | "legal" | "capstone";
 
@@ -483,7 +483,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "3",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -497,12 +497,12 @@ export const modules: CourseModule[] = [
         "kind": "hands-on",
         "title": "Memory: useful — but intentional",
         "paras": [
-          "Memory can personalise future responses if it is available and enabled. Review what is remembered, correct it when wrong, and use Temporary Chat when you do not want memory saved from a conversation.",
+          "Memory can use a continually updated summary of useful context when it is available and enabled. Review the Memory summary, correct it when wrong, and use Temporary Chat when you do not want a conversation to use or create memory.",
           "7 min",
           "1.",
-          "Open Settings → Personalization → Memory.",
+          "Open Settings → Personalization → Memory, then open Memory summary → Manage when that view is available on your account.",
           "2.",
-          "Review or clear anything that should not sit in a teaching account.",
+          "Review the Memory summary and correct or remove information that should not be used for personalisation. If the interface differs, use the live Settings search rather than an old screenshot path.",
           "3.",
           "Write in your booklet: what must never be stored in Memory.",
           "No real student personal data during training activities."
@@ -529,7 +529,7 @@ export const modules: CourseModule[] = [
           {
             "n": "2",
             "title": "Managed organisation workspace",
-            "body": "Business/Enterprise/Edu/Teachers workspaces have organisational controls and are not used for model training by default. The school must still approve the product, purpose, users, data and connected systems."
+            "body": "Business/Enterprise/Edu/Teachers workspaces have organisational controls and are not used for model training by default. Workspace policies, retention and admin controls still apply; the school must approve the product, purpose, users, data and connected systems."
           },
           {
             "n": "3",
@@ -578,7 +578,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "6",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -1331,9 +1331,9 @@ export const modules: CourseModule[] = [
       },
       {
         "kind": "lens",
-        "title": "Creating artifacts on ChatGPT Free: useful, but limited",
+        "title": "Drafting on Free: writing blocks first, Work when eligible",
         "paras": [
-          "Free can draft lesson materials, tables, explanations and structured outputs. Full ChatGPT Work-style creation/editing of documents, spreadsheets, presentations or Sites is a paid or eligible-workspace feature.",
+          "Free can draft lesson materials, tables, explanations and structured outputs directly in chat. Writing blocks are the current in-chat surface for finished reusable writing; full ChatGPT Work-style creation/editing of documents, spreadsheets, presentations or Sites is a paid or eligible-workspace feature.",
           "Use this question during the activity:",
           "“What would I need to check before using this with real students?”"
         ],
@@ -1355,14 +1355,14 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "check",
-            "title": "For a Free workshop, demonstrate reliable Free workflows first; mention Work only as an upgrade/workspace option.",
+            "title": "For a Free workshop, demonstrate chat + writing blocks first; mention Work only as an eligible paid/workspace option.",
             "body": ""
           }
         ],
         "avoid": "",
         "aim": "",
         "lens": "“What would I need to check before using this with real students?” 57",
-        "notes": "Demonstrate artifact creation only if the audience has access; otherwise show the workflow conceptually.",
+        "notes": "Do not teach Canvas as the default workflow. Demonstrate writing blocks when available; demonstrate Work only when the audience actually has access.",
         "duration": ""
       },
       {
@@ -1898,7 +1898,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "6",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -2139,7 +2139,7 @@ export const modules: CourseModule[] = [
           {
             "n": "2",
             "title": "Managed organisation workspace",
-            "body": "Business/Enterprise/Edu/Teachers workspaces have organisational controls and are not used for model training by default. The school must still approve the product, purpose, users, data and connected systems."
+            "body": "Business/Enterprise/Edu/Teachers workspaces have organisational controls and are not used for model training by default. Workspace policies, retention and admin controls still apply; the school must approve the product, purpose, users, data and connected systems."
           },
           {
             "n": "3",
@@ -2190,7 +2190,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "5",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -2213,12 +2213,12 @@ export const modules: CourseModule[] = [
         "items": [
           {
             "n": "6",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
         "avoid": "False anonymity “Laura, Year 10D, Belgian national-level hockey player…” may still point to one person. Initials, student numbers or coded IDs can also remain personal data if the person can be re-identified.",
-        "aim": "Safer standard Truly anonymous data means the person is no longer identifiable and anonymisation is effectively irreversible. Pseudonymised/de-identified data that can be re-linked remains personal data under GDPR. For unapproved personal AI: use fictional or truly anonymous data. 6 Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+        "aim": "Safer standard Truly anonymous data means the person is no longer identifiable and anonymisation is effectively irreversible. Pseudonymised/de-identified data that can be re-linked remains personal data under GDPR. For unapproved personal AI: use fictional or truly anonymous data. 6 Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
         "lens": "",
         "notes": "Use an audience-relevant example. Do not teach “remove the surname = anonymous”.",
         "duration": ""
@@ -2258,7 +2258,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "7",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -2332,7 +2332,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "9",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -2377,7 +2377,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "10",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -2821,7 +2821,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "3",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -2866,7 +2866,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "4",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -2900,7 +2900,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "5",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -2945,7 +2945,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "6",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -2989,7 +2989,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "2",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -3012,12 +3012,12 @@ export const modules: CourseModule[] = [
         "items": [
           {
             "n": "3",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
         "avoid": "False anonymity “Laura, Year 10D, Belgian national-level hockey player…” may still point to one person. Initials, student numbers or coded IDs can also remain personal data if the person can be re-identified.",
-        "aim": "Safer standard Truly anonymous data means the person is no longer identifiable and anonymisation is effectively irreversible. Pseudonymised/de-identified data that can be re-linked remains personal data under GDPR. For unapproved personal AI: use fictional or truly anonymous data. 3 Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+        "aim": "Safer standard Truly anonymous data means the person is no longer identifiable and anonymisation is effectively irreversible. Pseudonymised/de-identified data that can be re-linked remains personal data under GDPR. For unapproved personal AI: use fictional or truly anonymous data. 3 Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
         "lens": "",
         "notes": "Use an audience-relevant example. Do not teach “remove the surname = anonymous”.",
         "duration": ""
@@ -3057,7 +3057,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "4",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -3102,7 +3102,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "5",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
@@ -3125,12 +3125,12 @@ export const modules: CourseModule[] = [
         "items": [
           {
             "n": "6",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
         "avoid": "Unsafe Paste a parent complaint or colleague case containing names, family/health/behaviour details into a personal/unapproved AI account and ask it to write the reply.",
-        "aim": "Safer Extract only the non-identifying facts needed, use fictional placeholders, draft neutral wording, verify every claim, then restore necessary details only in the school-approved communication system. Pseudonyms may still be personal data. 6 Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+        "aim": "Safer Extract only the non-identifying facts needed, use fictional placeholders, draft neutral wording, verify every claim, then restore necessary details only in the school-approved communication system. Pseudonyms may still be personal data. 6 Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
         "lens": "",
         "notes": "",
         "duration": ""
@@ -3411,7 +3411,7 @@ export const modules: CourseModule[] = [
           {
             "n": "4",
             "title": "Treat Deep Research in Chat as plan, region and usage-limit dependent; check the in-product counter and do not make the workshop depend on it.",
-            "body": "Sources checked 10 Sep 2026: OpenAI Help Center — Free Tier FAQ, Projects, GPTs, File Uploads/Library, Scheduled Tasks, Apps/Plugins, Study Mode, Work. Interface, limits and rollout may vary."
+            "body": "Sources checked 15 Sep 2026: OpenAI Help Center — Free Tier FAQ, Projects, GPTs, File Uploads/Library, Scheduled Tasks, Apps/Plugins, Study Mode, Work. Interface, limits and rollout may vary."
           },
           {
             "n": "1",
@@ -3437,9 +3437,9 @@ export const modules: CourseModule[] = [
     "slides": [
       {
         "kind": "lens",
-        "title": "Creating artifacts on ChatGPT Free: useful, but limited",
+        "title": "Drafting on Free: writing blocks first, Work when eligible",
         "paras": [
-          "Free can draft lesson materials, tables, explanations and structured outputs. Full ChatGPT Work-style creation/editing of documents, spreadsheets, presentations or Sites is a paid or eligible-workspace feature.",
+          "Free can draft lesson materials, tables, explanations and structured outputs directly in chat. Writing blocks are the current in-chat surface for finished reusable writing; full ChatGPT Work-style creation/editing of documents, spreadsheets, presentations or Sites is a paid or eligible-workspace feature.",
           "Use this question during the activity:",
           "“What would I need to check before using this with real students?”"
         ],
@@ -3461,14 +3461,14 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "check",
-            "title": "For a Free workshop, demonstrate reliable Free workflows first; mention Work only as an upgrade/workspace option.",
+            "title": "For a Free workshop, demonstrate chat + writing blocks first; mention Work only as an eligible paid/workspace option.",
             "body": ""
           }
         ],
         "avoid": "",
         "aim": "",
         "lens": "“What would I need to check before using this with real students?” 57",
-        "notes": "Demonstrate artifact creation only if the audience has access; otherwise show the workflow conceptually.",
+        "notes": "Do not teach Canvas as the default workflow. Demonstrate writing blocks when available; demonstrate Work only when the audience actually has access.",
         "duration": ""
       },
       {
@@ -3570,8 +3570,8 @@ export const modules: CourseModule[] = [
   {
     "id": "21",
     "slug": "plugins-gpts",
-    "title": "Plugins, apps, GPTs & workflows",
-    "blurb": "Permissions, existing GPTs and scheduled-task limits.",
+    "title": "Plugins, apps & reusable workflows",
+    "blurb": "Permissions, Plugin workflows, GPT migration and scheduled-task limits.",
     "strand": "practice",
     "duration": "30 min",
     "slides": [
@@ -3673,9 +3673,9 @@ export const modules: CourseModule[] = [
       },
       {
         "kind": "teach",
-        "title": "GPTs on Free: use existing ones, do not create them",
+        "title": "Custom GPTs are legacy: plan migration to Plugins",
         "paras": [
-          "Useful — but different from Projects, and Free/personal accounts cannot create or publish new GPTs."
+          "Existing GPTs may still be available, but OpenAI is retiring custom GPTs and recommends moving reusable workflows to Plugins. Do not build a new school workflow around a feature that is being sunset."
         ],
         "items": [
           {
@@ -3685,8 +3685,8 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "2",
-            "title": "Current creation access",
-            "body": "New GPT creation/publishing is not available on personal ChatGPT accounts, including Free, Go, Plus and Pro. It remains a managed-workspace feature where permissions allow."
+            "title": "Migration, not new build",
+            "body": "OpenAI says a GPT-to-Plugin migration flow is planned. Existing GPT availability depends on account/workspace while retirement rolls out; test the replacement and permissions before switching."
           },
           {
             "n": "3",
@@ -3697,7 +3697,7 @@ export const modules: CourseModule[] = [
         "avoid": "",
         "aim": "",
         "lens": "",
-        "notes": "This is a major 2026 product change. Avoid telling personal Plus users to build a custom GPT as though the old workflow still exists.",
+        "notes": "Current as checked 15 Sep 2026: OpenAI recommends Plugins for reusable workflows and has announced custom-GPT retirement. Do not teach new GPT building as the durable workflow.",
         "duration": ""
       },
       {
@@ -3835,7 +3835,7 @@ export const modules: CourseModule[] = [
           {
             "n": "4",
             "title": "Treat Deep Research in Chat as plan, region and usage-limit dependent; check the in-product counter and do not make the workshop depend on it.",
-            "body": "Sources checked 10 Sep 2026: OpenAI Help Center — Free Tier FAQ, Projects, GPTs, File Uploads/Library, Scheduled Tasks, Apps/Plugins, Study Mode, Work. Interface, limits and rollout may vary."
+            "body": "Sources checked 15 Sep 2026: OpenAI Help Center — Free Tier FAQ, Projects, GPTs, File Uploads/Library, Scheduled Tasks, Apps/Plugins, Study Mode, Work. Interface, limits and rollout may vary."
           },
           {
             "n": "1",
@@ -3889,7 +3889,7 @@ export const modules: CourseModule[] = [
           {
             "n": "4",
             "title": "Do not use Free tasks for event-triggered/webhook workflows, confidential monitoring or actions that need paid/managed permissions.",
-            "body": "Sources checked 10 Sep 2026: OpenAI Help Center — Free Tier FAQ, Projects, GPTs, File Uploads/Library, Scheduled Tasks, Apps/Plugins, Study Mode, Work. Interface, limits and rollout may vary."
+            "body": "Sources checked 15 Sep 2026: OpenAI Help Center — Free Tier FAQ, Projects, GPTs, File Uploads/Library, Scheduled Tasks, Apps/Plugins, Study Mode, Work. Interface, limits and rollout may vary."
           },
           {
             "n": "2",
@@ -4068,7 +4068,7 @@ export const modules: CourseModule[] = [
           {
             "n": "2",
             "title": "Managed organisation workspace",
-            "body": "Business/Enterprise/Edu/Teachers workspaces have organisational controls and are not used for model training by default. The school must still approve the product, purpose, users, data and connected systems."
+            "body": "Business/Enterprise/Edu/Teachers workspaces have organisational controls and are not used for model training by default. Workspace policies, retention and admin controls still apply; the school must approve the product, purpose, users, data and connected systems."
           },
           {
             "n": "3",
@@ -4146,7 +4146,7 @@ export const modules: CourseModule[] = [
           },
           {
             "n": "5",
-            "title": "Sources checked 10 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
+            "title": "Sources checked 15 Sep 2026: Kennisnet (privacy & school AI agreements); European Commission GDPR guidance; EU AI Act consolidated 27 Jul 2026; Rijksoverheid Normenkader IBP; AP; OpenAI official privacy/age guidance. Educational guidance, not legal advice.",
             "body": ""
           }
         ],
